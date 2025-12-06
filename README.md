@@ -1,49 +1,53 @@
 # AnyRouter
 
-通用 API 代理服务，支持 OpenAI、Anthropic、Google、Azure、Groq 等任意 HTTP API 的统一转发。
+A universal API proxy service that supports unified forwarding of any
+HTTP API, including OpenAI, Anthropic, Google, Azure, Groq, and more.
 
-## 特性
+## Features
 
-- **通用代理** - 支持任意 HTTP/HTTPS API
-- **三种认证模式** - SK 别名 / Key ID / 直传 Token
-- **统计与监控** - 请求统计、IP 排行、黑名单管理
-- **边缘加速** - 基于 Cloudflare 全球网络
+-   **Universal Proxy** -- Supports any HTTP/HTTPS API\
+-   **Three Authentication Modes** -- SK alias / Key ID / Direct Token\
+-   **Statistics & Monitoring** -- Request stats, IP rankings, blacklist
+    management\
+-   **Edge Acceleration** -- Powered by Cloudflare's global network
 
-## 部署
+## Deployment
 
-### 方式一：一键部署（推荐）
+### Method 1: One-click Deployment (Recommended)
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/dext7r/anyrouter)
+[![Deploy to Cloudflare
+Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/muhammed-ajmal/anyrouter)
 
-### 方式二：GitHub 关联部署
+### Method 2: GitHub-linked Deployment
 
-1. Fork 本仓库到你的 GitHub 账号
-2. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers & Pages → Create
-3. 选择 **Workers** → Import from GitHub → 选择你 Fork 的仓库
-4. 使用默认配置，点击部署
-5. 部署后进入 Settings → Variables and Secrets，添加环境变量
+1.  Fork this repository to your GitHub account\
+2.  Log in to Cloudflare Dashboard → Workers & Pages → Create\
+3.  Choose **Workers** → Import from GitHub → Select your fork\
+4.  Use the default settings and click Deploy\
+5.  After deployment, go to Settings → Variables and Secrets to add
+    environment variables
 
-### 方式三：命令行部署
+### Method 3: Command-line Deployment
 
-```bash
+``` bash
 git clone https://github.com/dext7r/anyrouter.git
 cd anyrouter
 npm install
 
-# 本地开发：复制示例配置并填入你的配置
+# Local development: copy example configuration and fill in your values
 cp wrangler.toml.example wrangler.toml.local
-# 编辑 wrangler.toml.local 填入环境变量
+# Edit wrangler.toml.local to add your environment variables
 npx wrangler dev -c wrangler.toml.local
 
-# 部署到 Cloudflare
+# Deploy to Cloudflare
 npm run build
 npx wrangler deploy
-# 然后在 Dashboard 配置环境变量
+# Then configure environment variables in the Dashboard
 ```
 
-### 方式四：GitHub Actions
+### Method 4: GitHub Actions
 
-```yaml
+``` yaml
 name: Deploy
 on:
   push:
@@ -63,39 +67,39 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-## 环境变量
+## Environment Variables
 
-| 变量 | 必须 | 说明 |
-|------|------|------|
-| `ADMIN_PASSWORD` | ✅ | 管理面板登录密码 |
-| `SUPABASE_URL` | ❌ | Supabase 项目 URL |
-| `SUPABASE_KEY` | ❌ | Supabase anon key |
-| `UPSTASH_REDIS_URL` | ❌ | Upstash Redis REST URL |
-| `UPSTASH_REDIS_TOKEN` | ❌ | Upstash Redis Token |
+  Variable                Required   Description
+  ----------------------- ---------- ----------------------------
+  `ADMIN_PASSWORD`        ✅         Admin panel login password
+  `SUPABASE_URL`          ❌         Supabase project URL
+  `SUPABASE_KEY`          ❌         Supabase anon key
+  `UPSTASH_REDIS_URL`     ❌         Upstash Redis REST URL
+  `UPSTASH_REDIS_TOKEN`   ❌         Upstash Redis token
 
-> 不配置 Supabase/Redis 也可使用直传模式
+> You can use direct-pass mode without configuring Supabase/Redis.
 
-## 使用
+## Usage
 
-```bash
-# SK 别名模式（推荐）
+``` bash
+# SK Alias Mode (Recommended)
 curl -H "Authorization: Bearer sk-ar-xxxxxxxx" https://your-proxy/v1/chat/completions
 
-# Key ID 模式
+# Key ID Mode
 curl -H "Authorization: Bearer https://api.openai.com:a3x9k2" https://your-proxy/v1/chat/completions
 
-# 直传模式
+# Direct Token Mode
 curl -H "Authorization: Bearer https://api.openai.com:sk-xxx" https://your-proxy/v1/chat/completions
 ```
 
-## 路由
+## Routes
 
-| 路由 | 说明 |
-|------|------|
-| `/` | 状态页 |
-| `/docs` | 完整文档 |
-| `/admin` | 管理面板 |
-| `/*` | 代理请求 |
+  Route      Description
+  ---------- --------------------
+  `/`        Status page
+  `/docs`    Full documentation
+  `/admin`   Admin panel
+  `/*`       Proxied requests
 
 ## License
 
