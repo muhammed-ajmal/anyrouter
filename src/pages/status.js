@@ -1,16 +1,16 @@
-// ============ 状态页面 HTML ============
+// ============ Status Page HTML ============
 
 import { BUILD_TIME } from '../config.js'
 
 /**
- * 生成状态页面 HTML
+ * Generate Status Page HTML
  */
 export function getStatusHtml() {
   const buildTimeFormatted = new Date(BUILD_TIME)
-    .toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+    .toLocaleString('en-US', { timeZone: 'Asia/Shanghai' })
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -157,24 +157,24 @@ export function getStatusHtml() {
   <div class="card">
     <div class="logo"><i class="fas fa-route"></i></div>
     <h1>AnyRouter</h1>
-    <p class="tagline">轻量级 API 代理服务</p>
-    <div class="status"><i class="fas fa-circle"></i> 服务运行中</div>
+    <p class="tagline">Lightweight API Proxy Service</p>
+    <div class="status"><i class="fas fa-circle"></i> Service is running</div>
     <div class="features">
-      <div class="feature"><i class="fas fa-globe"></i><span>多端点代理</span></div>
-      <div class="feature"><i class="fas fa-key"></i><span>Token 管理</span></div>
-      <div class="feature"><i class="fas fa-shield-alt"></i><span>安全转发</span></div>
-      <div class="feature"><i class="fas fa-bolt"></i><span>边缘加速</span></div>
+      <div class="feature"><i class="fas fa-globe"></i><span>Multi-endpoint proxy</span></div>
+      <div class="feature"><i class="fas fa-key"></i><span>Token Management</span></div>
+      <div class="feature"><i class="fas fa-shield-alt"></i><span>Secure Forwarding</span></div>
+      <div class="feature"><i class="fas fa-bolt"></i><span>Edge Acceleration</span></div>
     </div>
     <div class="buttons">
-      <a href="/docs" class="btn btn-primary"><i class="fas fa-book"></i>使用文档</a>
-      <a href="/admin" class="btn btn-secondary"><i class="fas fa-cog"></i>管理面板</a>
+      <a href="/docs" class="btn btn-primary"><i class="fas fa-book"></i>Documentation</a>
+      <a href="/admin" class="btn btn-secondary"><i class="fas fa-cog"></i>Admin Panel</a>
       <a href="https://github.com/dext7r/anyrouter" target="_blank" class="btn btn-secondary"><i class="fab fa-github"></i>GitHub</a>
     </div>
   </div>
   <div class="footer">
     <div>Powered by <a href="https://workers.cloudflare.com" target="_blank">Cloudflare Workers</a></div>
     <div style="margin-top: 8px; font-size: 12px; opacity: 0.7;">
-      <i class="fas fa-clock"></i> 部署时间: ${buildTimeFormatted}
+      <i class="fas fa-clock"></i> Deployment time: ${buildTimeFormatted}
     </div>
   </div>
 </body>

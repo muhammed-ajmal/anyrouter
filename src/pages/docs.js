@@ -1,15 +1,15 @@
-// ============ 公开文档页面 ============
+// ============ Public Documentation Page ============
 
 /**
- * 生成文档页面 HTML（无需鉴权）
+ * Generate documentation page HTML (no authentication required)
  */
 export function getDocsHtml() {
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AnyRouter - 通用 API 代理服务文档</title>
+  <title>AnyRouter - Universal API Proxy Service Documentation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -30,7 +30,7 @@ export function getDocsHtml() {
     html { scroll-behavior: smooth; }
     .api-card { transition: all 0.2s; }
     .api-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-    /* TOC 左右收起动画 */
+    /* TOC collapse/expand animation */
     .toc-sidebar { transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease; overflow: hidden; }
     .toc-sidebar.collapsed { width: 48px !important; }
     .toc-sidebar.collapsed .toc-content { opacity: 0; pointer-events: none; }
@@ -46,17 +46,17 @@ export function getDocsHtml() {
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-4xl font-bold mb-4"><i class="fas fa-rocket mr-3"></i>AnyRouter</h1>
-          <p class="text-xl text-purple-100 mb-2">通用 API 代理服务</p>
-          <p class="text-purple-200 mb-6">支持 OpenAI、Anthropic、Google、Azure、Groq 等任意 HTTP API 的统一转发</p>
+          <p class="text-xl text-purple-100 mb-2">Universal API Proxy Service</p>
+          <p class="text-purple-200 mb-6">Supports unified forwarding of any HTTP API, including OpenAI, Anthropic, Google, Azure, Groq, and more.</p>
           <div class="flex gap-3 flex-wrap">
             <a href="https://github.com/dext7r/anyrouter" target="_blank" class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all">
               <i class="fab fa-github mr-2"></i>GitHub
             </a>
             <a href="/admin" class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all">
-              <i class="fas fa-cog mr-2"></i>管理面板
+              <i class="fas fa-cog mr-2"></i>Admin Panel
             </a>
             <a href="/" class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-all">
-              <i class="fas fa-home mr-2"></i>首页
+              <i class="fas fa-home mr-2"></i>Home
             </a>
           </div>
         </div>
@@ -73,20 +73,20 @@ export function getDocsHtml() {
       <aside id="tocSidebar" class="hidden lg:block w-56 shrink-0 toc-sidebar">
         <nav class="sticky top-8 glass-effect rounded-xl shadow-lg overflow-hidden">
           <div class="p-3 cursor-pointer hover:bg-purple-50 transition-all flex items-center justify-between" onclick="toggleTOC()">
-            <h3 class="font-bold text-gray-800 toc-content whitespace-nowrap"><i class="fas fa-list mr-2 text-purple-600"></i>目录</h3>
+            <h3 class="font-bold text-gray-800 toc-content whitespace-nowrap"><i class="fas fa-list mr-2 text-purple-600"></i>Table of Contents</h3>
             <i class="fas fa-chevron-left text-purple-600 toc-toggle-btn"></i>
           </div>
           <ul class="space-y-2 text-sm text-gray-600 px-4 pb-4 toc-content">
-            <li><a href="#overview" class="toc-link block py-1">概述</a></li>
-            <li><a href="#supported-apis" class="toc-link block py-1">支持的 API</a></li>
-            <li><a href="#quick-start" class="toc-link block py-1">快速开始</a></li>
-            <li><a href="#auth-format" class="toc-link block py-1">认证格式</a></li>
-            <li><a href="#usage-modes" class="toc-link block py-1">使用模式</a></li>
-            <li><a href="#examples" class="toc-link block py-1">代码示例</a></li>
-            <li><a href="#sdk-config" class="toc-link block py-1">SDK 配置</a></li>
-            <li><a href="#errors" class="toc-link block py-1">错误处理</a></li>
-            <li><a href="#deployment" class="toc-link block py-1">部署指南</a></li>
-            <li><a href="#faq" class="toc-link block py-1">常见问题</a></li>
+            <li><a href="#overview" class="toc-link block py-1">Overview</a></li>
+            <li><a href="#supported-apis" class="toc-link block py-1">Supported APIs</a></li>
+            <li><a href="#quick-start" class="toc-link block py-1">Quick Start</a></li>
+            <li><a href="#auth-format" class="toc-link block py-1">Authentication Format</a></li>
+            <li><a href="#usage-modes" class="toc-link block py-1">Usage Modes</a></li>
+            <li><a href="#examples" class="toc-link block py-1">Code Examples</a></li>
+            <li><a href="#sdk-config" class="toc-link block py-1">SDK Configuration</a></li>
+            <li><a href="#errors" class="toc-link block py-1">Error Handling</a></li>
+            <li><a href="#deployment" class="toc-link block py-1">Deployment Guide</a></li>
+            <li><a href="#faq" class="toc-link block py-1">FAQ</a></li>
           </ul>
         </nav>
       </aside>
@@ -95,21 +95,21 @@ export function getDocsHtml() {
       <main class="flex-1 min-w-0">
         <!-- Overview -->
         <section id="overview" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-info-circle mr-2 text-purple-600"></i>概述</h2>
-          <p class="text-gray-600 mb-4">AnyRouter 是一个运行在 Cloudflare Workers 上的<strong>通用 API 代理服务</strong>，可以转发任意 HTTP API 请求：</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-info-circle mr-2 text-purple-600"></i>Overview</h2>
+          <p class="text-gray-600 mb-4">AnyRouter is a <strong>universal API proxy service</strong> running on Cloudflare Workers that can forward any HTTP API request:</p>
           <ul class="space-y-2 text-gray-600">
-            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>通用代理</strong>：支持任意 HTTP/HTTPS API，不限于 AI 服务</li>
-            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>密钥管理</strong>：统一管理多个 API 密钥，通过短 ID 安全访问</li>
-            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>直传模式</strong>：无需预先配置，直接传递 Token 即可使用</li>
-            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>边缘加速</strong>：基于 Cloudflare 全球边缘网络，低延迟访问</li>
-            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>请求统计</strong>：记录使用量，支持按 API 和 Key 统计</li>
+            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>Universal Proxy</strong>: Supports any HTTP/HTTPS API, not limited to AI services.</li>
+            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>Key Management</strong>: Manage multiple API keys in one place and access them securely via short IDs.</li>
+            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>Direct Passthrough</strong>: No pre-configuration needed. Use by passing the token directly.</li>
+            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>Edge Acceleration</strong>: Low-latency access powered by Cloudflare's global edge network.</li>
+            <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2"></i><strong>Request Statistics</strong>: Track usage and get stats by API and key.</li>
           </ul>
         </section>
 
         <!-- Supported APIs -->
         <section id="supported-apis" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-plug mr-2 text-purple-600"></i>支持的 API</h2>
-          <p class="text-gray-600 mb-4">AnyRouter 支持任意 HTTP API，以下是常用的 AI 服务示例：</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-plug mr-2 text-purple-600"></i>Supported APIs</h2>
+          <p class="text-gray-600 mb-4">AnyRouter supports any HTTP API. Here are some examples of popular AI services:</p>
 
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             <div class="api-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
@@ -187,24 +187,24 @@ export function getDocsHtml() {
                 <div class="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center">
                   <i class="fas fa-ellipsis-h text-white text-sm"></i>
                 </div>
-                <span class="font-semibold text-gray-800 text-sm">更多...</span>
+                <span class="font-semibold text-gray-800 text-sm">And more...</span>
               </div>
-              <code class="text-xs text-gray-600">任意 HTTP API</code>
+              <code class="text-xs text-gray-600">Any HTTP API</code>
             </div>
           </div>
 
           <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i>只要是标准的 HTTP/HTTPS API，都可以通过 AnyRouter 代理访问，不限于上述服务。</p>
+            <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i>Any standard HTTP/HTTPS API can be proxied through AnyRouter, not just the services listed above.</p>
           </div>
         </section>
 
         <!-- Quick Start -->
         <section id="quick-start" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-bolt mr-2 text-purple-600"></i>快速开始</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-bolt mr-2 text-purple-600"></i>Quick Start</h2>
           <div class="space-y-4">
             <div>
-              <h3 class="font-semibold text-gray-800 mb-2">1. 获取代理地址</h3>
-              <p class="text-gray-600 mb-2">当前服务地址：</p>
+              <h3 class="font-semibold text-gray-800 mb-2">1. Get Your Proxy Address</h3>
+              <p class="text-gray-600 mb-2">Your current service address:</p>
               <div class="code-block relative">
                 <pre><code class="language-text" id="proxyUrl"></code></pre>
                 <button onclick="copyToClipboard('proxyUrl')" class="copy-btn px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
@@ -213,28 +213,28 @@ export function getDocsHtml() {
               </div>
             </div>
             <div>
-              <h3 class="font-semibold text-gray-800 mb-2">2. 设置认证信息</h3>
-              <p class="text-gray-600">在请求头中添加 <code class="bg-gray-100 px-2 py-1 rounded text-purple-600">Authorization</code> 字段，格式如下：</p>
+              <h3 class="font-semibold text-gray-800 mb-2">2. Set Authentication Info</h3>
+              <p class="text-gray-600">Add an <code class="bg-gray-100 px-2 py-1 rounded text-purple-600">Authorization</code> header to your request with the following format:</p>
             </div>
           </div>
         </section>
 
         <!-- Auth Format -->
         <section id="auth-format" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-key mr-2 text-purple-600"></i>认证格式</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-key mr-2 text-purple-600"></i>Authentication Format</h2>
           <div class="code-block relative mb-4">
-            <pre><code class="language-http">Authorization: Bearer &lt;目标API地址&gt;:&lt;Key ID 或 Token&gt;</code></pre>
+            <pre><code class="language-http">Authorization: Bearer &lt;Target API URL&gt;:&lt;Key ID or Token&gt;</code></pre>
           </div>
           <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-            <h4 class="font-semibold text-yellow-800 mb-2"><i class="fas fa-lightbulb mr-1"></i>格式说明</h4>
+            <h4 class="font-semibold text-yellow-800 mb-2"><i class="fas fa-lightbulb mr-1"></i>Format Details</h4>
             <ul class="text-sm text-yellow-700 space-y-1">
-              <li>• <strong>目标API地址</strong>：完整的 API 地址，如 <code>https://api.openai.com</code></li>
-              <li>• <strong>Key ID</strong>：6 位字母数字组合，用于从数据库查找对应的 Token</li>
-              <li>• <strong>Token</strong>：直接传递完整的 API Token（直传模式）</li>
+              <li>• <strong>Target API URL</strong>: The full URL of the target API, e.g., <code>https://api.openai.com</code></li>
+              <li>• <strong>Key ID</strong>: A 6-digit alphanumeric ID used to look up the corresponding token from the database.</li>
+              <li>• <strong>Token</strong>: The full API token passed directly (Direct Passthrough mode).</li>
             </ul>
           </div>
 
-          <h3 class="font-semibold text-gray-800 mb-2">各平台示例</h3>
+          <h3 class="font-semibold text-gray-800 mb-2">Platform Examples</h3>
           <div class="space-y-2 text-sm">
             <div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
               <span class="w-20 text-gray-500">OpenAI:</span>
@@ -257,79 +257,79 @@ export function getDocsHtml() {
 
         <!-- Usage Modes -->
         <section id="usage-modes" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-exchange-alt mr-2 text-purple-600"></i>使用模式</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-exchange-alt mr-2 text-purple-600"></i>Usage Modes</h2>
 
           <div class="grid md:grid-cols-3 gap-4">
             <!-- SK Alias Mode -->
             <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg p-4 border-2 border-orange-300">
               <div class="flex items-center mb-3">
-                <span class="px-2 py-1 bg-orange-500 text-white text-xs rounded-full font-bold mr-2">最佳</span>
-                <h3 class="font-bold text-orange-800">SK 别名模式</h3>
+                <span class="px-2 py-1 bg-orange-500 text-white text-xs rounded-full font-bold mr-2">Best</span>
+                <h3 class="font-bold text-orange-800">SK Alias Mode</h3>
               </div>
-              <p class="text-sm text-orange-700 mb-3">使用类似 OpenAI 格式的 SK 别名，一键访问</p>
+              <p class="text-sm text-orange-700 mb-3">Use an OpenAI-style SK alias for one-click access.</p>
               <div class="code-block">
                 <pre><code class="language-text">Bearer sk-ar-xxxxxxxx...</code></pre>
               </div>
               <ul class="mt-3 text-xs text-orange-600 space-y-1">
-                <li><i class="fas fa-star mr-1"></i>类似原生 API Key 格式</li>
-                <li><i class="fas fa-shield-alt mr-1"></i>不暴露真实 Token</li>
-                <li><i class="fas fa-magic mr-1"></i>自动识别目标 API</li>
-                <li><i class="fas fa-sync mr-1"></i>可随时重新生成</li>
+                <li><i class="fas fa-star mr-1"></i>Native API key format</li>
+                <li><i class="fas fa-shield-alt mr-1"></i>Doesn't expose real token</li>
+                <li><i class="fas fa-magic mr-1"></i>Auto-detects target API</li>
+                <li><i class="fas fa-sync mr-1"></i>Can be regenerated anytime</li>
               </ul>
             </div>
 
             <!-- Key ID Mode -->
             <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
               <div class="flex items-center mb-3">
-                <span class="px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-bold mr-2">推荐</span>
-                <h3 class="font-bold text-blue-800">Key ID 模式</h3>
+                <span class="px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-bold mr-2">Recommended</span>
+                <h3 class="font-bold text-blue-800">Key ID Mode</h3>
               </div>
-              <p class="text-sm text-blue-700 mb-3">使用 6 位短 ID + URL 访问预配置的密钥</p>
+              <p class="text-sm text-blue-700 mb-3">Use a 6-digit short ID + URL to access a pre-configured key.</p>
               <div class="code-block">
                 <pre><code class="language-text">Bearer https://api.openai.com:a3x9k2</code></pre>
               </div>
               <ul class="mt-3 text-xs text-blue-600 space-y-1">
-                <li><i class="fas fa-shield-alt mr-1"></i>不暴露真实 Token</li>
-                <li><i class="fas fa-tachometer-alt mr-1"></i>支持使用统计</li>
-                <li><i class="fas fa-toggle-on mr-1"></i>可随时启用/禁用</li>
+                <li><i class="fas fa-shield-alt mr-1"></i>Doesn't expose real token</li>
+                <li><i class="fas fa-tachometer-alt mr-1"></i>Supports usage statistics</li>
+                <li><i class="fas fa-toggle-on mr-1"></i>Can be enabled/disabled</li>
               </ul>
             </div>
 
             <!-- Direct Mode -->
             <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
               <div class="flex items-center mb-3">
-                <span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full font-bold mr-2">灵活</span>
-                <h3 class="font-bold text-green-800">直传模式</h3>
+                <span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full font-bold mr-2">Flexible</span>
+                <h3 class="font-bold text-green-800">Direct Passthrough Mode</h3>
               </div>
-              <p class="text-sm text-green-700 mb-3">直接在请求中传递 API Token</p>
+              <p class="text-sm text-green-700 mb-3">Pass the API token directly in the request.</p>
               <div class="code-block">
                 <pre><code class="language-text">Bearer https://api.openai.com:sk-xxx...</code></pre>
               </div>
               <ul class="mt-3 text-xs text-green-600 space-y-1">
-                <li><i class="fas fa-bolt mr-1"></i>即用即走，无需配置</li>
-                <li><i class="fas fa-globe mr-1"></i>支持任意 API 地址</li>
-                <li><i class="fas fa-clock mr-1"></i>临时使用场景</li>
+                <li><i class="fas fa-bolt mr-1"></i>No config needed</li>
+                <li><i class="fas fa-globe mr-1"></i>Supports any API URL</li>
+                <li><i class="fas fa-clock mr-1"></i>Ideal for temporary use</li>
               </ul>
             </div>
           </div>
 
           <div class="mt-4 bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-800 mb-2"><i class="fas fa-magic mr-1"></i>模式自动判断</h4>
-            <p class="text-sm text-purple-700">系统会根据 Authorization 内容自动判断模式：</p>
+            <h4 class="font-semibold text-purple-800 mb-2"><i class="fas fa-magic mr-1"></i>Automatic Mode Detection</h4>
+            <p class="text-sm text-purple-700">The system automatically determines the mode based on the Authorization header:</p>
             <ul class="text-sm text-purple-600 mt-2 space-y-1">
-              <li>• <code>sk-ar-xxx</code> 开头 → SK 别名模式（自动匹配目标 API）</li>
-              <li>• URL 后跟 6 位字母数字（如 <code>https://...:a3x9k2</code>）→ Key ID 模式</li>
-              <li>• URL 后跟其他格式（如 <code>https://...:sk-xxx</code>）→ 直传模式</li>
+              <li>• Starts with <code>sk-ar-xxx</code> → SK Alias Mode (auto-matches target API)</li>
+              <li>• URL followed by 6 alphanumeric chars (e.g., <code>https://...:a3x9k2</code>) → Key ID Mode</li>
+              <li>• URL followed by other formats (e.g., <code>https://...:sk-xxx</code>) → Direct Passthrough Mode</li>
             </ul>
           </div>
 
           <!-- SK Alias Details -->
           <div class="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
-            <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-key mr-1"></i>SK 别名详解</h4>
-            <p class="text-sm text-orange-700 mb-3">SK 别名是 AnyRouter 独创的认证方式，格式类似各大平台的 API Key：</p>
+            <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-key mr-1"></i>SK Alias Explained</h4>
+            <p class="text-sm text-orange-700 mb-3">The SK Alias is a unique AnyRouter authentication method, formatted like a native API key:</p>
             <div class="grid md:grid-cols-2 gap-3 text-sm">
               <div class="bg-white rounded p-3">
-                <div class="font-medium text-gray-700 mb-1">格式对比</div>
+                <div class="font-medium text-gray-700 mb-1">Format Comparison</div>
                 <ul class="text-xs text-gray-600 space-y-1">
                   <li>OpenAI: <code class="text-green-600">sk-proj-xxx</code></li>
                   <li>Anthropic: <code class="text-orange-600">sk-ant-xxx</code></li>
@@ -337,11 +337,11 @@ export function getDocsHtml() {
                 </ul>
               </div>
               <div class="bg-white rounded p-3">
-                <div class="font-medium text-gray-700 mb-1">使用方法</div>
+                <div class="font-medium text-gray-700 mb-1">How to Use</div>
                 <ol class="text-xs text-gray-600 space-y-1 list-decimal list-inside">
-                  <li>在管理面板点击「生成」获取 SK 别名</li>
-                  <li>直接用 <code>sk-ar-xxx</code> 作为 API Key</li>
-                  <li>无需指定目标 API URL</li>
+                  <li>Click "Generate" in the admin panel to get an SK alias.</li>
+                  <li>Use the <code>sk-ar-xxx</code> alias as your API key.</li>
+                  <li>No need to specify the target API URL.</li>
                 </ol>
               </div>
             </div>
@@ -350,7 +350,7 @@ export function getDocsHtml() {
 
         <!-- Code Examples -->
         <section id="examples" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-code mr-2 text-purple-600"></i>代码示例</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-code mr-2 text-purple-600"></i>Code Examples</h2>
 
           <!-- cURL -->
           <div class="mb-6">
@@ -498,13 +498,13 @@ console.log(data.choices[0].message.content);</code></pre>
 
         <!-- SDK Config -->
         <section id="sdk-config" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-cogs mr-2 text-purple-600"></i>SDK / CLI 配置</h2>
-          <p class="text-gray-600 mb-4">通过环境变量配置各种 SDK 和 CLI 工具使用本代理服务：</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-cogs mr-2 text-purple-600"></i>SDK / CLI Configuration</h2>
+          <p class="text-gray-600 mb-4">Configure various SDKs and CLI tools to use this proxy service via environment variables:</p>
 
           <!-- SK Alias Mode (Recommended) -->
           <div class="mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-300 rounded-lg">
-            <h3 class="font-semibold text-orange-800 mb-2"><i class="fas fa-star mr-2 text-orange-500"></i>SK 别名模式（推荐）</h3>
-            <p class="text-sm text-orange-700 mb-3">使用 SK 别名最简洁，无需指定目标 API URL：</p>
+            <h3 class="font-semibold text-orange-800 mb-2"><i class="fas fa-star mr-2 text-orange-500"></i>SK Alias Mode (Recommended)</h3>
+            <p class="text-sm text-orange-700 mb-3">Using an SK alias is the simplest method and doesn't require specifying the target API URL:</p>
             <div class="code-block relative mb-2">
               <pre><code class="language-bash" id="config-sk-alias"># Claude Code / Anthropic SDK
 export ANTHROPIC_BASE_URL=<span class="proxy-url"></span>
@@ -517,12 +517,12 @@ export OPENAI_API_KEY=sk-ar-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
                 <i class="fas fa-copy"></i>
               </button>
             </div>
-            <p class="text-xs text-orange-600"><i class="fas fa-info-circle mr-1"></i>在管理面板的配置列表中点击「生成」按钮获取你的 SK 别名</p>
+            <p class="text-xs text-orange-600"><i class="fas fa-info-circle mr-1"></i>Click the "Generate" button in the admin panel's config list to get your SK alias.</p>
           </div>
 
           <!-- Claude Code -->
           <div class="mb-6">
-            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-orange-500"></i>Claude Code CLI（Key ID 模式）</h3>
+            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-orange-500"></i>Claude Code CLI (Key ID Mode)</h3>
             <div class="code-block relative mb-2">
               <pre><code class="language-bash" id="config-claude">export ANTHROPIC_BASE_URL=<span class="proxy-url"></span>
 export ANTHROPIC_AUTH_TOKEN=https://api.anthropic.com:b4y8m1</code></pre>
@@ -534,7 +534,7 @@ export ANTHROPIC_AUTH_TOKEN=https://api.anthropic.com:b4y8m1</code></pre>
 
           <!-- OpenAI CLI -->
           <div class="mb-6">
-            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-green-500"></i>OpenAI CLI / SDK（Key ID 模式）</h3>
+            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-green-500"></i>OpenAI CLI / SDK (Key ID Mode)</h3>
             <div class="code-block relative mb-2">
               <pre><code class="language-bash" id="config-openai">export OPENAI_BASE_URL=<span class="proxy-url"></span>/v1
 export OPENAI_API_KEY=https://api.openai.com:a3x9k2</code></pre>
@@ -546,15 +546,15 @@ export OPENAI_API_KEY=https://api.openai.com:a3x9k2</code></pre>
 
           <!-- Generic -->
           <div class="mb-4">
-            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-purple-500"></i>通用配置模式</h3>
+            <h3 class="font-semibold text-gray-800 mb-2"><i class="fas fa-terminal mr-2 text-purple-500"></i>Generic Configuration Mode</h3>
             <div class="code-block relative mb-2">
-              <pre><code class="language-bash" id="config-generic"># SK 别名模式（最简洁）
+              <pre><code class="language-bash" id="config-generic"># SK Alias Mode (simplest)
 export {SDK}_BASE_URL=<span class="proxy-url"></span>
 export {SDK}_API_KEY=sk-ar-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# Key ID 模式
+# Key ID Mode
 export {SDK}_BASE_URL=<span class="proxy-url"></span>
-export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
+export {SDK}_API_KEY=https://{TargetAPIDomain}:{KeyID}</code></pre>
               <button onclick="copyCode('config-generic')" class="copy-btn px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
                 <i class="fas fa-copy"></i>
               </button>
@@ -562,27 +562,27 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
           </div>
 
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 class="font-semibold text-blue-800 mb-2"><i class="fas fa-info-circle mr-1"></i>配置说明</h4>
+            <h4 class="font-semibold text-blue-800 mb-2"><i class="fas fa-info-circle mr-1"></i>Configuration Notes</h4>
             <ul class="text-sm text-blue-700 space-y-1">
-              <li>• <strong>SK 别名模式</strong>：最简洁，只需一个 <code>sk-ar-xxx</code> 即可，系统自动识别目标 API</li>
-              <li>• <strong>Key ID 模式</strong>：需要指定 URL 和 6 位 Key ID，适合需要明确指定目标的场景</li>
-              <li>• 环境变量可以添加到 <code>~/.bashrc</code>、<code>~/.zshrc</code> 或项目的 <code>.env</code> 文件</li>
+              <li>• <strong>SK Alias Mode</strong>: The simplest. Just one <code>sk-ar-xxx</code> key is needed, and the system auto-detects the target API.</li>
+              <li>• <strong>Key ID Mode</strong>: Requires specifying the URL and 6-digit Key ID. Best when you need to explicitly target a service.</li>
+              <li>• Environment variables can be added to your <code>~/.bashrc</code>, <code>~/.zshrc</code>, or a project <code>.env</code> file.</li>
             </ul>
           </div>
         </section>
 
         <!-- Errors -->
         <section id="errors" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-exclamation-triangle mr-2 text-purple-600"></i>错误处理</h2>
-          <p class="text-gray-600 mb-4">当请求出错时，API 会返回结构化的错误信息：</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-exclamation-triangle mr-2 text-purple-600"></i>Error Handling</h2>
+          <p class="text-gray-600 mb-4">If a request fails, the API returns a structured error message:</p>
 
           <div class="code-block mb-4">
             <pre><code class="language-json">{
   "error": {
     "code": "NOT_FOUND",
-    "message": "Key ID 不存在",
-    "hint": "找不到 Key ID \\"abc123\\"，请检查是否输入正确",
-    "contact": "如有疑问请联系管理员"
+    "message": "Key ID not found",
+    "hint": "Could not find Key ID \\"abc123\\". Please check if it's correct.",
+    "contact": "Contact the administrator if you have questions."
   }
 }</code></pre>
           </div>
@@ -591,36 +591,36 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
             <table class="w-full text-sm">
               <thead>
                 <tr class="border-b border-gray-200">
-                  <th class="text-left py-2 px-3 font-semibold text-gray-700">错误码</th>
-                  <th class="text-left py-2 px-3 font-semibold text-gray-700">HTTP 状态</th>
-                  <th class="text-left py-2 px-3 font-semibold text-gray-700">说明</th>
+                  <th class="text-left py-2 px-3 font-semibold text-gray-700">Error Code</th>
+                  <th class="text-left py-2 px-3 font-semibold text-gray-700">HTTP Status</th>
+                  <th class="text-left py-2 px-3 font-semibold text-gray-700">Description</th>
                 </tr>
               </thead>
               <tbody class="text-gray-600">
                 <tr class="border-b border-gray-100">
                   <td class="py-2 px-3"><code class="text-red-600">UNAUTHORIZED</code></td>
                   <td class="py-2 px-3">401</td>
-                  <td class="py-2 px-3">缺少或无效的 Authorization header</td>
+                  <td class="py-2 px-3">Missing or invalid Authorization header.</td>
                 </tr>
                 <tr class="border-b border-gray-100">
                   <td class="py-2 px-3"><code class="text-red-600">BAD_REQUEST</code></td>
                   <td class="py-2 px-3">400</td>
-                  <td class="py-2 px-3">请求格式错误</td>
+                  <td class="py-2 px-3">Invalid request format.</td>
                 </tr>
                 <tr class="border-b border-gray-100">
                   <td class="py-2 px-3"><code class="text-red-600">NOT_FOUND</code></td>
                   <td class="py-2 px-3">404</td>
-                  <td class="py-2 px-3">API 地址未配置或 Key ID 不存在</td>
+                  <td class="py-2 px-3">API URL not configured or Key ID not found.</td>
                 </tr>
                 <tr class="border-b border-gray-100">
                   <td class="py-2 px-3"><code class="text-red-600">FORBIDDEN</code></td>
                   <td class="py-2 px-3">403</td>
-                  <td class="py-2 px-3">Key 已被禁用</td>
+                  <td class="py-2 px-3">Key is disabled.</td>
                 </tr>
                 <tr>
                   <td class="py-2 px-3"><code class="text-red-600">SERVICE_ERROR</code></td>
                   <td class="py-2 px-3">503</td>
-                  <td class="py-2 px-3">无法连接到目标 API</td>
+                  <td class="py-2 px-3">Failed to connect to the target API.</td>
                 </tr>
               </tbody>
             </table>
@@ -629,23 +629,23 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
 
         <!-- Deployment Guide -->
         <section id="deployment" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-server mr-2 text-purple-600"></i>部署指南</h2>
-          <p class="text-gray-600 mb-4">选择以下任一方式部署你的 AnyRouter 代理服务：</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-server mr-2 text-purple-600"></i>Deployment Guide</h2>
+          <p class="text-gray-600 mb-4">Choose one of the following methods to deploy your AnyRouter proxy service:</p>
 
           <!-- Deploy Methods Tabs -->
           <div class="mb-6">
             <div class="flex border-b border-gray-200 mb-4">
               <button onclick="showDeployTab('oneclick')" id="tab-oneclick" class="deploy-tab px-4 py-2 text-sm font-medium text-purple-600 border-b-2 border-purple-600">
-                <i class="fas fa-bolt mr-1"></i>一键部署
+                <i class="fas fa-bolt mr-1"></i>One-Click Deploy
               </button>
               <button onclick="showDeployTab('github')" id="tab-github" class="deploy-tab px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600">
-                <i class="fab fa-github mr-1"></i>GitHub 关联
+                <i class="fab fa-github mr-1"></i>Link GitHub Repo
               </button>
               <button onclick="showDeployTab('paste')" id="tab-paste" class="deploy-tab px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600">
-                <i class="fas fa-paste mr-1"></i>复制粘贴
+                <i class="fas fa-paste mr-1"></i>Copy & Paste
               </button>
               <button onclick="showDeployTab('cli')" id="tab-cli" class="deploy-tab px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600">
-                <i class="fas fa-terminal mr-1"></i>命令行部署
+                <i class="fas fa-terminal mr-1"></i>CLI Deploy
               </button>
               <button onclick="showDeployTab('actions')" id="tab-actions" class="deploy-tab px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600">
                 <i class="fas fa-cogs mr-1"></i>GitHub Actions
@@ -655,18 +655,18 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
             <!-- One-Click Deploy -->
             <div id="deploy-oneclick" class="deploy-content">
               <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-4 mb-4">
-                <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-star mr-1"></i>最简单的方式</h4>
-                <p class="text-sm text-orange-700 mb-3">点击下方按钮，自动 Fork 并部署到你的 Cloudflare 账户：</p>
+                <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-star mr-1"></i>Easiest Method</h4>
+                <p class="text-sm text-orange-700 mb-3">Click the button below to automatically fork and deploy to your Cloudflare account:</p>
                 <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/dext7r/anyrouter" target="_blank" class="inline-block">
                   <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers" class="h-10">
                 </a>
               </div>
               <div class="text-sm text-gray-600">
-                <p class="mb-2"><strong>部署后配置环境变量：</strong></p>
+                <p class="mb-2"><strong>Configure environment variables after deployment:</strong></p>
                 <ol class="list-decimal list-inside space-y-1 text-gray-500">
-                  <li>进入 Cloudflare Dashboard → Workers & Pages → 你的 Worker</li>
-                  <li>点击 Settings → Variables and Secrets</li>
-                  <li>添加 <code class="bg-gray-100 px-1 rounded">ADMIN_PASSWORD</code>、<code class="bg-gray-100 px-1 rounded">SUPABASE_URL</code> 等变量</li>
+                  <li>Go to Cloudflare Dashboard → Workers & Pages → Your Worker</li>
+                  <li>Click Settings → Variables and Secrets</li>
+                  <li>Add variables like <code class="bg-gray-100 px-1 rounded">ADMIN_PASSWORD</code>, <code class="bg-gray-100 px-1 rounded">SUPABASE_URL</code>, etc.</li>
                 </ol>
               </div>
             </div>
@@ -674,33 +674,33 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
             <!-- GitHub Integration -->
             <div id="deploy-github" class="deploy-content hidden">
               <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <h4 class="font-semibold text-blue-800 mb-2"><i class="fab fa-github mr-1"></i>关联 GitHub 仓库自动部署</h4>
-                <p class="text-sm text-blue-700">每次推送代码到 GitHub，Cloudflare 自动构建并部署</p>
+                <h4 class="font-semibold text-blue-800 mb-2"><i class="fab fa-github mr-1"></i>Auto-deploy by linking a GitHub repository</h4>
+                <p class="text-sm text-blue-700">Cloudflare will automatically build and deploy whenever you push code to GitHub.</p>
               </div>
               <ol class="space-y-3 text-sm text-gray-600">
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">1.</span>
-                  <div>Fork <a href="https://github.com/dext7r/anyrouter" target="_blank" class="text-purple-600 hover:underline">dext7r/anyrouter</a> 到你的 GitHub 账号</div>
+                  <div>Fork <a href="https://github.com/dext7r/anyrouter" target="_blank" class="text-purple-600 hover:underline">dext7r/anyrouter</a> to your GitHub account.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">2.</span>
-                  <div>登录 <a href="https://dash.cloudflare.com" target="_blank" class="text-purple-600 hover:underline">Cloudflare Dashboard</a> → Workers & Pages → <strong>Create</strong></div>
+                  <div>Log in to <a href="https://dash.cloudflare.com" target="_blank" class="text-purple-600 hover:underline">Cloudflare Dashboard</a> → Workers & Pages → <strong>Create</strong>.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">3.</span>
-                  <div>选择 <strong>Workers</strong> → <strong>Import from GitHub</strong></div>
+                  <div>Select <strong>Workers</strong> → <strong>Import from GitHub</strong>.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">4.</span>
-                  <div>授权 GitHub 并选择你 Fork 的仓库</div>
+                  <div>Authorize GitHub and select your forked repository.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">5.</span>
-                  <div>使用默认配置，直接点击<strong>部署</strong>（仓库已包含 wrangler.toml）</div>
+                  <div>Use the default settings and click <strong>Deploy</strong> (the repo already includes wrangler.toml).</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">6.</span>
-                  <div>部署完成后，进入 Settings → Variables and Secrets 添加环境变量</div>
+                  <div>After deployment, go to Settings → Variables and Secrets to add environment variables.</div>
                 </li>
               </ol>
             </div>
@@ -708,71 +708,71 @@ export {SDK}_API_KEY=https://{目标API地址}:{KeyID}</code></pre>
             <!-- Paste Deploy -->
             <div id="deploy-paste" class="deploy-content hidden">
               <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 mb-4">
-                <h4 class="font-semibold text-green-800 mb-2"><i class="fas fa-paste mr-1"></i>直接复制代码部署</h4>
-                <p class="text-sm text-green-700">无需 Git，直接复制构建后的代码到 Cloudflare Workers</p>
+                <h4 class="font-semibold text-green-800 mb-2"><i class="fas fa-paste mr-1"></i>Deploy by copying code directly</h4>
+                <p class="text-sm text-green-700">No Git needed. Just copy the bundled code into Cloudflare Workers.</p>
               </div>
               <ol class="space-y-3 text-sm text-gray-600">
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">1.</span>
-                  <div>登录 <a href="https://dash.cloudflare.com" target="_blank" class="text-purple-600 hover:underline">Cloudflare Dashboard</a> → Workers & Pages → <strong>Create</strong></div>
+                  <div>Log in to <a href="https://dash.cloudflare.com" target="_blank" class="text-purple-600 hover:underline">Cloudflare Dashboard</a> → Workers & Pages → <strong>Create</strong>.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">2.</span>
-                  <div>选择 <strong>Workers</strong> → <strong>Create Worker</strong>（或 Hello World 模板）</div>
+                  <div>Select <strong>Workers</strong> → <strong>Create Worker</strong> (or use the Hello World template).</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">3.</span>
-                  <div>给 Worker 起名（如 <code class="bg-gray-100 px-1 rounded">anyrouter</code>），点击 <strong>Deploy</strong></div>
+                  <div>Name your Worker (e.g., <code class="bg-gray-100 px-1 rounded">anyrouter</code>) and click <strong>Deploy</strong>.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">4.</span>
-                  <div>点击 <strong>Edit code</strong> 进入在线编辑器</div>
+                  <div>Click <strong>Edit code</strong> to open the online editor.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">5.</span>
                   <div>
-                    <strong>删除</strong>默认代码，点击下方按钮一键复制代码：
+                    <strong>Delete</strong> the default code and click the button below to copy the code:
                     <div class="mt-2 flex items-center gap-2 flex-wrap">
                       <button onclick="copyWorkerCode()" id="copyWorkerBtn" class="text-sm bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow">
-                        <i class="fas fa-copy mr-1"></i>一键复制 anyrouter.js
+                        <i class="fas fa-copy mr-1"></i>One-click copy anyrouter.js
                       </button>
-                      <a href="https://raw.githubusercontent.com/dext7r/anyrouter/main/anyrouter.js" target="_blank" class="text-xs text-purple-600 hover:underline"><i class="fas fa-external-link-alt mr-1"></i>或手动打开</a>
+                      <a href="https://raw.githubusercontent.com/dext7r/anyrouter/main/anyrouter.js" target="_blank" class="text-xs text-purple-600 hover:underline"><i class="fas fa-external-link-alt mr-1"></i>Or open manually</a>
                     </div>
                     <p class="text-xs text-gray-400 mt-1" id="copyWorkerStatus"></p>
                   </div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">6.</span>
-                  <div>点击右上角 <strong>Deploy</strong> 按钮</div>
+                  <div>Click the <strong>Deploy</strong> button in the top right.</div>
                 </li>
                 <li class="flex items-start">
                   <span class="font-bold text-purple-600 mr-2">7.</span>
-                  <div>返回 Worker 设置，添加环境变量（见下方环境变量配置）</div>
+                  <div>Go back to the Worker settings to add environment variables (see below).</div>
                 </li>
               </ol>
               <div class="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p class="text-sm text-yellow-700"><i class="fas fa-lightbulb mr-1"></i><strong>提示</strong>：这种方式适合快速体验，但后续更新需要手动复制新代码。推荐使用 GitHub 关联方式实现自动更新。</p>
+                <p class="text-sm text-yellow-700"><i class="fas fa-lightbulb mr-1"></i><strong>Tip</strong>: This method is great for a quick trial, but future updates require manually copying new code. We recommend linking a GitHub repo for automatic updates.</p>
               </div>
             </div>
 
             <!-- CLI Deploy -->
             <div id="deploy-cli" class="deploy-content hidden">
               <div class="code-block relative mb-4">
-                <pre><code class="language-bash" id="deploy-clone"># 克隆仓库
+                <pre><code class="language-bash" id="deploy-clone"># Clone the repo
 git clone https://github.com/dext7r/anyrouter.git
 cd anyrouter
 npm install
 
-# 本地开发（可选）
+# Local development (optional)
 cp wrangler.toml.example wrangler.toml.local
-# 编辑 wrangler.toml.local 填入环境变量
+# Edit wrangler.toml.local to fill in your env vars
 npx wrangler dev -c wrangler.toml.local
 
-# 部署到 Cloudflare
+# Deploy to Cloudflare
 npm run build
-npx wrangler login  # 首次需要
+npx wrangler login  # Required for the first time
 npx wrangler deploy
-# 部署后在 Dashboard 配置环境变量</code></pre>
+# Configure environment variables in the Dashboard after deployment</code></pre>
                 <button onclick="copyCode('deploy-clone')" class="copy-btn px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
                   <i class="fas fa-copy"></i>
                 </button>
@@ -782,10 +782,10 @@ npx wrangler deploy
             <!-- GitHub Actions -->
             <div id="deploy-actions" class="deploy-content hidden">
               <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                <h4 class="font-semibold text-green-800 mb-2"><i class="fas fa-robot mr-1"></i>自动化 CI/CD</h4>
-                <p class="text-sm text-green-700">推送到 main 分支时自动部署</p>
+                <h4 class="font-semibold text-green-800 mb-2"><i class="fas fa-robot mr-1"></i>Automated CI/CD</h4>
+                <p class="text-sm text-green-700">Automatically deploy when you push to the main branch.</p>
               </div>
-              <p class="text-sm text-gray-600 mb-3">在仓库中创建 <code class="bg-gray-100 px-1 rounded">.github/workflows/deploy.yml</code>：</p>
+              <p class="text-sm text-gray-600 mb-3">Create <code class="bg-gray-100 px-1 rounded">.github/workflows/deploy.yml</code> in your repository:</p>
               <div class="code-block relative mb-4">
                 <pre><code class="language-yaml" id="deploy-actions-code">name: Deploy to Cloudflare Workers
 
@@ -812,11 +812,11 @@ jobs:
                 </button>
               </div>
               <div class="text-sm text-gray-600">
-                <p class="mb-2"><strong>配置 GitHub Secrets：</strong></p>
+                <p class="mb-2"><strong>Configure GitHub Secrets:</strong></p>
                 <ol class="list-decimal list-inside space-y-1 text-gray-500">
-                  <li>在 Cloudflare Dashboard → My Profile → API Tokens 创建 Token</li>
-                  <li>权限选择：Account - Cloudflare Workers Scripts - Edit</li>
-                  <li>在 GitHub 仓库 Settings → Secrets → Actions 添加：
+                  <li>Create a token in Cloudflare Dashboard → My Profile → API Tokens.</li>
+                  <li>Permissions: Account - Cloudflare Workers Scripts - Edit.</li>
+                  <li>In your GitHub repo, go to Settings → Secrets → Actions and add:
                     <ul class="list-disc list-inside ml-4 mt-1">
                       <li><code class="bg-gray-100 px-1 rounded">CLOUDFLARE_API_TOKEN</code></li>
                       <li><code class="bg-gray-100 px-1 rounded">CLOUDFLARE_ACCOUNT_ID</code></li>
@@ -830,14 +830,14 @@ jobs:
           <!-- Prerequisites -->
           <div class="mb-6">
             <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
-              <i class="fas fa-clipboard-list mr-2 text-purple-600"></i>准备工作
+              <i class="fas fa-clipboard-list mr-2 text-purple-600"></i>Prerequisites
             </h3>
             <div class="bg-gray-50 rounded-lg p-4 text-sm">
               <ul class="space-y-2 text-gray-600">
-                <li><i class="fas fa-check text-green-500 mr-2"></i>GitHub 账号（用于 Fork 代码仓库）</li>
-                <li><i class="fas fa-check text-green-500 mr-2"></i>Cloudflare 账号（<a href="https://dash.cloudflare.com/sign-up" target="_blank" class="text-purple-600 hover:underline">免费注册</a>）</li>
-                <li><i class="fas fa-check text-green-500 mr-2"></i>Supabase 账号（<a href="https://supabase.com" target="_blank" class="text-purple-600 hover:underline">免费注册</a>，可选，用于密钥管理）</li>
-                <li><i class="fas fa-check text-green-500 mr-2"></i>Upstash 账号（<a href="https://upstash.com" target="_blank" class="text-purple-600 hover:underline">免费注册</a>，可选，用于 Redis 缓存和统计）</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>GitHub account (to fork the code repository)</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Cloudflare account (<a href="https://dash.cloudflare.com/sign-up" target="_blank" class="text-purple-600 hover:underline">free to sign up</a>)</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Supabase account (<a href="https://supabase.com" target="_blank" class="text-purple-600 hover:underline">free to sign up</a>, optional, for key management)</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Upstash account (<a href="https://upstash.com" target="_blank" class="text-purple-600 hover:underline">free to sign up</a>, optional, for Redis cache and stats)</li>
               </ul>
             </div>
           </div>
@@ -846,44 +846,44 @@ jobs:
           <div class="mb-6">
             <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
               <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm mr-2">3</span>
-              配置 Supabase 数据库（可选）
+              Configure Supabase Database (Optional)
             </h3>
             <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-3">
-              <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-1"></i>如果只需要直传模式，可跳过此步骤</p>
+              <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-1"></i>You can skip this step if you only need the Direct Passthrough mode.</p>
             </div>
             <ol class="space-y-3 text-sm text-gray-600">
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">a.</span>
-                登录 <a href="https://supabase.com" target="_blank" class="text-purple-600 hover:underline">Supabase</a> 并创建新项目
+                Log in to <a href="https://supabase.com" target="_blank" class="text-purple-600 hover:underline">Supabase</a> and create a new project.
               </li>
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">b.</span>
-                进入 SQL Editor，执行数据库初始化脚本：
+                Go to the SQL Editor and run the database initialization script:
               </li>
             </ol>
             <div class="mt-3 border border-gray-200 rounded-lg overflow-hidden">
               <div class="flex items-center justify-between px-3 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-all" onclick="toggleSchemaSQL()">
                 <div class="flex items-center gap-2">
                   <i id="schemaSqlToggle" class="fas fa-chevron-right text-purple-600 text-xs transition-transform"></i>
-                  <span class="text-xs text-gray-600 font-medium"><i class="fas fa-database mr-1"></i>schema.sql - 从 GitHub 实时获取</span>
+                  <span class="text-xs text-gray-600 font-medium"><i class="fas fa-database mr-1"></i>schema.sql - Fetched live from GitHub</span>
                 </div>
                 <div class="flex gap-2" onclick="event.stopPropagation()">
-                  <a href="https://github.com/dext7r/anyrouter/blob/main/schema.sql" target="_blank" class="text-xs text-purple-600 hover:underline"><i class="fab fa-github mr-1"></i>查看源文件</a>
-                  <button onclick="loadSchemaSQL()" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200"><i class="fas fa-sync-alt mr-1"></i>刷新</button>
-                  <button onclick="copyCode('deploy-sql')" class="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700"><i class="fas fa-copy mr-1"></i>复制</button>
+                  <a href="https://github.com/dext7r/anyrouter/blob/main/schema.sql" target="_blank" class="text-xs text-purple-600 hover:underline"><i class="fab fa-github mr-1"></i>View Source</a>
+                  <button onclick="loadSchemaSQL()" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
+                  <button onclick="copyCode('deploy-sql')" class="text-xs bg-purple-600 text-white px-2 py-1 rounded hover:bg-purple-700"><i class="fas fa-copy mr-1"></i>Copy</button>
                 </div>
               </div>
               <div id="schemaSqlContent" class="hidden">
                 <div class="code-block relative rounded-none">
-                  <pre style="max-height: 400px; overflow-y: auto;"><code class="language-sql" id="deploy-sql"><i class="fas fa-spinner fa-spin"></i> 正在从 GitHub 加载 schema.sql...</code></pre>
+                  <pre style="max-height: 400px; overflow-y: auto;"><code class="language-sql" id="deploy-sql"><i class="fas fa-spinner fa-spin"></i> Loading schema.sql from GitHub...</code></pre>
                 </div>
               </div>
-              <p class="text-xs text-gray-500 px-3 py-2 bg-gray-50 border-t border-gray-200"><i class="fas fa-info-circle mr-1"></i>脚本包含：建表、索引、RLS 策略、触发器、迁移逻辑（支持已有表升级）</p>
+              <p class="text-xs text-gray-500 px-3 py-2 bg-gray-50 border-t border-gray-200"><i class="fas fa-info-circle mr-1"></i>Script includes: table creation, indexes, RLS policies, triggers, and migration logic (supports upgrading existing tables).</p>
             </div>
             <ol class="space-y-3 text-sm text-gray-600 mt-3" start="3">
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">c.</span>
-                进入 Settings → API，获取 <code class="bg-gray-100 px-1 rounded">Project URL</code> 和 <code class="bg-gray-100 px-1 rounded">anon/public key</code>
+                Go to Settings → API to get the <code class="bg-gray-100 px-1 rounded">Project URL</code> and <code class="bg-gray-100 px-1 rounded">anon/public key</code>.
               </li>
             </ol>
           </div>
@@ -892,23 +892,23 @@ jobs:
           <div class="mb-6">
             <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
               <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm mr-2">4</span>
-              配置 Upstash Redis（可选）
+              Configure Upstash Redis (Optional)
             </h3>
             <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-3">
-              <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-1"></i>如果不需要统计和缓存功能，可跳过此步骤</p>
+              <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-1"></i>You can skip this step if you don't need statistics and caching features.</p>
             </div>
             <ol class="space-y-3 text-sm text-gray-600">
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">a.</span>
-                登录 <a href="https://upstash.com" target="_blank" class="text-purple-600 hover:underline">Upstash</a> 并创建 Redis 数据库
+                Log in to <a href="https://upstash.com" target="_blank" class="text-purple-600 hover:underline">Upstash</a> and create a Redis database.
               </li>
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">b.</span>
-                选择离你最近的区域（如 US-East-1 或 AP-Northeast-1）
+                Choose the region closest to you (e.g., US-East-1 or AP-Northeast-1).
               </li>
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">c.</span>
-                在 REST API 标签页复制 <code class="bg-gray-100 px-1 rounded">UPSTASH_REDIS_REST_URL</code> 和 <code class="bg-gray-100 px-1 rounded">UPSTASH_REDIS_REST_TOKEN</code>
+                From the REST API tab, copy the <code class="bg-gray-100 px-1 rounded">UPSTASH_REDIS_REST_URL</code> and <code class="bg-gray-100 px-1 rounded">UPSTASH_REDIS_REST_TOKEN</code>.
               </li>
             </ol>
           </div>
@@ -917,47 +917,47 @@ jobs:
           <div class="mb-6">
             <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
               <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm mr-2">5</span>
-              配置环境变量
+              Configure Environment Variables
             </h3>
-            <p class="text-sm text-gray-600 mb-3">部署后在 Cloudflare Dashboard → Workers → 你的 Worker → Settings → Variables and Secrets 添加：</p>
+            <p class="text-sm text-gray-600 mb-3">After deploying, go to Cloudflare Dashboard → Workers → Your Worker → Settings → Variables and Secrets to add:</p>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
                   <tr class="border-b border-gray-200">
-                    <th class="text-left py-2 px-3 font-semibold text-gray-700">变量名</th>
-                    <th class="text-left py-2 px-3 font-semibold text-gray-700">必须</th>
-                    <th class="text-left py-2 px-3 font-semibold text-gray-700">说明</th>
-                    <th class="text-left py-2 px-3 font-semibold text-gray-700">获取方式</th>
+                    <th class="text-left py-2 px-3 font-semibold text-gray-700">Variable Name</th>
+                    <th class="text-left py-2 px-3 font-semibold text-gray-700">Required</th>
+                    <th class="text-left py-2 px-3 font-semibold text-gray-700">Description</th>
+                    <th class="text-left py-2 px-3 font-semibold text-gray-700">How to Get</th>
                   </tr>
                 </thead>
                 <tbody class="text-gray-600">
                   <tr class="border-b border-gray-100">
                     <td class="py-2 px-3"><code class="text-purple-600">ADMIN_PASSWORD</code></td>
                     <td class="py-2 px-3"><span class="text-green-600 font-bold">✓</span></td>
-                    <td class="py-2 px-3">管理面板登录密码</td>
-                    <td class="py-2 px-3 text-gray-400">自定义</td>
+                    <td class="py-2 px-3">Admin panel login password</td>
+                    <td class="py-2 px-3 text-gray-400">Custom</td>
                   </tr>
                   <tr class="border-b border-gray-100">
                     <td class="py-2 px-3"><code class="text-purple-600">SUPABASE_URL</code></td>
-                    <td class="py-2 px-3"><span class="text-gray-400">可选</span></td>
-                    <td class="py-2 px-3">Supabase 项目 URL</td>
+                    <td class="py-2 px-3"><span class="text-gray-400">Optional</span></td>
+                    <td class="py-2 px-3">Supabase project URL</td>
                     <td class="py-2 px-3 text-xs">Supabase → Settings → API → Project URL</td>
                   </tr>
                   <tr class="border-b border-gray-100">
                     <td class="py-2 px-3"><code class="text-purple-600">SUPABASE_KEY</code></td>
-                    <td class="py-2 px-3"><span class="text-gray-400">可选</span></td>
+                    <td class="py-2 px-3"><span class="text-gray-400">Optional</span></td>
                     <td class="py-2 px-3">Supabase anon key</td>
                     <td class="py-2 px-3 text-xs">Supabase → Settings → API → anon public</td>
                   </tr>
                   <tr class="border-b border-gray-100">
                     <td class="py-2 px-3"><code class="text-purple-600">UPSTASH_REDIS_URL</code></td>
-                    <td class="py-2 px-3"><span class="text-gray-400">可选</span></td>
+                    <td class="py-2 px-3"><span class="text-gray-400">Optional</span></td>
                     <td class="py-2 px-3">Upstash Redis REST URL</td>
                     <td class="py-2 px-3 text-xs">Upstash → Redis → REST API</td>
                   </tr>
                   <tr>
                     <td class="py-2 px-3"><code class="text-purple-600">UPSTASH_REDIS_TOKEN</code></td>
-                    <td class="py-2 px-3"><span class="text-gray-400">可选</span></td>
+                    <td class="py-2 px-3"><span class="text-gray-400">Optional</span></td>
                     <td class="py-2 px-3">Upstash Redis Token</td>
                     <td class="py-2 px-3 text-xs">Upstash → Redis → REST API</td>
                   </tr>
@@ -965,7 +965,7 @@ jobs:
               </table>
             </div>
             <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i>不配置 Supabase/Redis 也可使用直传模式</p>
+              <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-1"></i>You can still use Direct Passthrough mode without configuring Supabase/Redis.</p>
             </div>
           </div>
 
@@ -973,64 +973,64 @@ jobs:
           <div class="mb-6">
             <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
               <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm mr-2">6</span>
-              配置自定义域名（可选）
+              Configure Custom Domain (Optional)
             </h3>
             <ol class="space-y-3 text-sm text-gray-600">
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">a.</span>
-                登录 Cloudflare Dashboard，进入 Workers & Pages
+                Log in to Cloudflare Dashboard and go to Workers & Pages.
               </li>
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">b.</span>
-                选择你的 Worker，点击 Settings → Triggers → Custom Domains
+                Select your Worker, then click Settings → Triggers → Custom Domains.
               </li>
               <li class="flex items-start">
                 <span class="font-bold text-purple-600 mr-2">c.</span>
-                添加你的域名（域名需要已添加到 Cloudflare）
+                Add your domain (it must already be added to Cloudflare).
               </li>
             </ol>
           </div>
 
           <!-- Deployment Checklist -->
           <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-800 mb-2"><i class="fas fa-clipboard-check mr-1"></i>部署后检查清单</h4>
+            <h4 class="font-semibold text-purple-800 mb-2"><i class="fas fa-clipboard-check mr-1"></i>Post-Deployment Checklist</h4>
             <ul class="text-sm text-purple-700 space-y-1">
-              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>访问 <code>/</code> 查看状态页面</li>
-              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>访问 <code>/admin</code> 登录管理面板</li>
-              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>添加 API 配置并测试代理功能</li>
-              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>生成 SK 别名用于 SDK 配置</li>
+              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>Visit <code>/</code> to see the status page.</li>
+              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>Visit <code>/admin</code> to log in to the admin panel.</li>
+              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>Add an API config and test the proxy functionality.</li>
+              <li><i class="fas fa-check-circle text-green-500 mr-1"></i>Generate an SK alias for SDK configuration.</li>
             </ul>
           </div>
         </section>
 
         <!-- FAQ -->
         <section id="faq" class="section glass-effect rounded-xl p-6 shadow-lg mb-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-question-circle mr-2 text-purple-600"></i>常见问题</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4"><i class="fas fa-question-circle mr-2 text-purple-600"></i>FAQ</h2>
 
           <div class="space-y-4">
             <div class="border-b border-gray-100 pb-4">
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 如何获取 Key ID？</h3>
-              <p class="text-gray-600 text-sm">登录<a href="/admin" class="text-purple-600 hover:underline">管理面板</a>，添加 API 配置后系统会自动生成 6 位 Key ID。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: How do I get a Key ID?</h3>
+              <p class="text-gray-600 text-sm">Log in to the <a href="/admin" class="text-purple-600 hover:underline">admin panel</a>. After adding an API configuration, the system will automatically generate a 6-digit Key ID.</p>
             </div>
             <div class="border-b border-gray-100 pb-4">
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 支持哪些 API？</h3>
-              <p class="text-gray-600 text-sm">支持<strong>任意 HTTP/HTTPS API</strong>，包括但不限于：OpenAI、Anthropic、Google AI、Azure OpenAI、Groq、Mistral、Cohere、HuggingFace 等。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: Which APIs are supported?</h3>
+              <p class="text-gray-600 text-sm"><strong>Any HTTP/HTTPS API</strong> is supported, including but not limited to: OpenAI, Anthropic, Google AI, Azure OpenAI, Groq, Mistral, Cohere, HuggingFace, etc.</p>
             </div>
             <div class="border-b border-gray-100 pb-4">
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 数据安全吗？</h3>
-              <p class="text-gray-600 text-sm">代理服务不会存储任何请求内容，仅转发请求。API Token 存储在数据库中，传输使用 HTTPS 加密。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: Is my data secure?</h3>
+              <p class="text-gray-600 text-sm">The proxy service does not store any request content; it only forwards requests. API tokens are stored in your database, and all transmission is encrypted via HTTPS.</p>
             </div>
             <div class="border-b border-gray-100 pb-4">
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 如何自己部署？</h3>
-              <p class="text-gray-600 text-sm">Fork <a href="https://github.com/dext7r/anyrouter" target="_blank" class="text-purple-600 hover:underline">GitHub 仓库</a>，配置 Cloudflare Workers 和 Supabase 数据库即可。详见仓库 README。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: How can I deploy it myself?</h3>
+              <p class="text-gray-600 text-sm">Fork the <a href="https://github.com/dext7r/anyrouter" target="_blank" class="text-purple-600 hover:underline">GitHub repository</a> and configure Cloudflare Workers and a Supabase database. See the repository's README for details.</p>
             </div>
             <div class="border-b border-gray-100 pb-4">
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 有请求限制吗？</h3>
-              <p class="text-gray-600 text-sm">代理服务本身无限制，但会受到 Cloudflare Workers 免费版的限制（每日 10 万请求）和目标 API 的限制。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: Are there any request limits?</h3>
+              <p class="text-gray-600 text-sm">The proxy service itself has no limits, but you will be subject to the limits of Cloudflare's free plan (100,000 requests/day) and the limits of the target API.</p>
             </div>
             <div>
-              <h3 class="font-semibold text-gray-800 mb-2">Q: 为什么要用代理而不是直连？</h3>
-              <p class="text-gray-600 text-sm">1) 统一管理多个 API 密钥；2) 避免在客户端暴露 Token；3) 利用 Cloudflare 边缘网络加速；4) 便于监控和统计使用量。</p>
+              <h3 class="font-semibold text-gray-800 mb-2">Q: Why use a proxy instead of connecting directly?</h3>
+              <p class="text-gray-600 text-sm">1) Manage multiple API keys in one place. 2) Avoid exposing tokens on the client-side. 3) Accelerate requests with Cloudflare's edge network. 4) Easily monitor and track usage.</p>
             </div>
           </div>
         </section>
@@ -1045,35 +1045,35 @@ jobs:
   </div>
 
   <script>
-    // 设置代理 URL
+    // Set proxy URL
     const proxyUrl = window.location.origin;
     document.getElementById('proxyUrl').textContent = proxyUrl;
     document.querySelectorAll('.proxy-url').forEach(el => el.textContent = proxyUrl);
 
-    // 从 GitHub 加载 schema.sql
+    // Load schema.sql from GitHub
     const SCHEMA_SQL_URL = 'https://raw.githubusercontent.com/dext7r/anyrouter/main/schema.sql';
     let schemaSQL = '';
 
     async function loadSchemaSQL() {
       const el = document.getElementById('deploy-sql');
-      el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在从 GitHub 加载...';
+      el.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading from GitHub...';
       try {
         const response = await fetch(SCHEMA_SQL_URL);
         if (!response.ok) throw new Error('HTTP ' + response.status);
         schemaSQL = await response.text();
         el.textContent = schemaSQL;
         hljs.highlightElement(el);
-        showToast('schema.sql 加载成功');
+        showToast('schema.sql loaded successfully');
       } catch (e) {
-        el.innerHTML = '-- 加载失败: ' + e.message + '\\n-- 请访问 GitHub 查看完整脚本:\\n-- https://github.com/dext7r/anyrouter/blob/main/schema.sql';
+        el.innerHTML = '-- Failed to load: ' + e.message + '\\n-- Please view the full script on GitHub:\\n-- https://github.com/dext7r/anyrouter/blob/main/schema.sql';
         console.error('Failed to load schema.sql:', e);
       }
     }
 
-    // 页面加载时自动获取 schema.sql
+    // Auto-load schema.sql on page load
     loadSchemaSQL();
 
-    // 折叠/展开 schema.sql
+    // Collapse/expand schema.sql
     function toggleSchemaSQL() {
       const content = document.getElementById('schemaSqlContent');
       const toggle = document.getElementById('schemaSqlToggle');
@@ -1086,7 +1086,7 @@ jobs:
       }
     }
 
-    // 复制 Worker 代码
+    // Copy Worker code
     const WORKER_JS_URL = 'https://raw.githubusercontent.com/dext7r/anyrouter/main/anyrouter.js';
     let workerCode = '';
 
@@ -1096,11 +1096,11 @@ jobs:
       const originalHTML = btn.innerHTML;
 
       btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>正在获取...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Fetching...';
       status.textContent = '';
 
       try {
-        // 如果已缓存则直接使用
+        // Use cached code if available
         if (!workerCode) {
           const response = await fetch(WORKER_JS_URL);
           if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1108,17 +1108,17 @@ jobs:
         }
 
         await navigator.clipboard.writeText(workerCode);
-        btn.innerHTML = '<i class="fas fa-check mr-1"></i>已复制！';
-        status.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-1"></i>代码已复制到剪贴板，请粘贴到 Cloudflare 编辑器';
-        showToast('Worker 代码已复制，请粘贴到 Cloudflare');
+        btn.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+        status.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-1"></i>Code copied to clipboard. Please paste it into the Cloudflare editor.';
+        showToast('Worker code copied. Please paste it into Cloudflare.');
 
         setTimeout(() => {
           btn.innerHTML = originalHTML;
           btn.disabled = false;
         }, 3000);
       } catch (e) {
-        btn.innerHTML = '<i class="fas fa-times mr-1"></i>复制失败';
-        status.innerHTML = '<i class="fas fa-exclamation-circle text-red-500 mr-1"></i>获取失败: ' + e.message + '，请<a href="' + WORKER_JS_URL + '" target="_blank" class="text-purple-600 underline">手动打开</a>复制';
+        btn.innerHTML = '<i class="fas fa-times mr-1"></i>Copy Failed';
+        status.innerHTML = '<i class="fas fa-exclamation-circle text-red-500 mr-1"></i>Failed to fetch: ' + e.message + '. Please <a href="' + WORKER_JS_URL + '" target="_blank" class="text-purple-600 underline">open manually</a> to copy.';
         console.error('Failed to copy worker code:', e);
 
         setTimeout(() => {
@@ -1128,28 +1128,28 @@ jobs:
       }
     }
 
-    // 代码高亮
+    // Highlight code blocks
     hljs.highlightAll();
 
-    // 复制功能
+    // Copy function
     function copyToClipboard(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        showToast('已复制到剪贴板');
+        showToast('Copied to clipboard');
       });
     }
 
     function copyCode(elementId) {
       const el = document.getElementById(elementId);
       let text = el.textContent;
-      // 如果是 schema.sql 且已加载，使用缓存内容
+      // If it's schema.sql and loaded, use the cached content
       if (elementId === 'deploy-sql' && schemaSQL) {
         text = schemaSQL;
       } else {
         text = text.replace(/<span class="proxy-url"><\\/span>/g, proxyUrl);
       }
       navigator.clipboard.writeText(text).then(() => {
-        showToast('代码已复制');
+        showToast('Code copied');
       });
     }
 
@@ -1161,30 +1161,30 @@ jobs:
       setTimeout(() => toast.remove(), 2000);
     }
 
-    // TOC 左右收起/展开
+    // TOC collapse/expand
     function toggleTOC() {
       const sidebar = document.getElementById('tocSidebar');
       sidebar.classList.toggle('collapsed');
     }
 
-    // 部署方式 Tab 切换
+    // Switch deploy tabs
     function showDeployTab(tabName) {
-      // 隐藏所有内容
+      // Hide all content
       document.querySelectorAll('.deploy-content').forEach(el => el.classList.add('hidden'));
-      // 重置所有 tab 样式
+      // Reset all tab styles
       document.querySelectorAll('.deploy-tab').forEach(el => {
         el.classList.remove('text-purple-600', 'border-b-2', 'border-purple-600');
         el.classList.add('text-gray-500');
       });
-      // 显示选中内容
+      // Show selected content
       document.getElementById('deploy-' + tabName).classList.remove('hidden');
-      // 激活选中 tab
+      // Activate selected tab
       const activeTab = document.getElementById('tab-' + tabName);
       activeTab.classList.remove('text-gray-500');
       activeTab.classList.add('text-purple-600', 'border-b-2', 'border-purple-600');
     }
 
-    // TOC 高亮
+    // Highlight TOC
     const sections = document.querySelectorAll('.section');
     const tocLinks = document.querySelectorAll('.toc-link');
 

@@ -1,4 +1,4 @@
-// ============ API 路由处理 ============
+// ============ API Route Handling ============
 
 import { verifyAdmin, validateConfigPayload, jsonResponse } from '../utils/helpers.js'
 import {
@@ -13,24 +13,24 @@ import { getRedisClient } from '../cache/redis.js'
 import { warmupCache } from '../cache/index.js'
 
 /**
- * 处理 API 请求
+ * Handles API requests.
  */
 export async function handleApiRequest(request, env, url) {
-  // 验证管理员权限
+  // Verify administrator privileges
   if (!verifyAdmin(request, env)) {
     return jsonResponse({ error: 'Unauthorized' }, 401)
   }
 
   const path = url.pathname
 
-  // GET /api/configs - 获取所有配置
+  // GET /api/configs - Get all configurations
   if (path === '/api/configs' && request.method === 'GET') {
     const config = await getConfigFromDB(env)
     const lastUsed = await getLastUsedTimes(env)
     return jsonResponse({ success: true, data: config, lastUsed })
   }
 
-  // POST /api/configs - 添加新配置
+  // POST /api/configs - Add a new configuration
   if (path === '/api/configs' && request.method === 'POST') {
     const body = await request.json()
     const validation = validateConfigPayload(body)
@@ -48,7 +48,7 @@ export async function handleApiRequest(request, env, url) {
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // PATCH /api/configs/:id - 更新配置
+  // PATCH /api/configs/:id - Update a configuration
   if (path.match(/^\/api\/configs\/\d+$/) && request.method === 'PATCH') {
     const id = path.split('/').pop()
     const body = await request.json()
@@ -60,28 +60,28 @@ export async function handleApiRequest(request, env, url) {
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // DELETE /api/configs/:id - 删除配置
+  // DELETE /api/configs/:id - Delete a configuration
   if (path.match(/^\/api\/configs\/\d+$/) && request.method === 'DELETE') {
     const id = path.split('/').pop()
     const result = await deleteConfigFromDB(env, id)
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // POST /api/configs/:id/sk-alias - 生成或更新 SK 别名
+  // POST /api/configs/:id/sk-alias - Generate or update an SK alias
   if (path.match(/^\/api\/configs\/\d+\/sk-alias$/) && request.method === 'POST') {
     const id = path.split('/')[3]
     const result = await updateSkAlias(env, id)
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // DELETE /api/configs/:id/sk-alias - 删除 SK 别名
+  // DELETE /api/configs/:id/sk-alias - Delete an SK alias
   if (path.match(/^\/api\/configs\/\d+\/sk-alias$/) && request.method === 'DELETE') {
     const id = path.split('/')[3]
     const result = await updateSkAlias(env, id, '')
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // GET /api/status - 获取系统状态（存储模式、数据库连接）
+  // GET /api/status - Get system status (storage mode, database connection)
   if (path === '/api/status' && request.method === 'GET') {
     const hasDbConfig = Boolean(env.SUPABASE_URL && env.SUPABASE_KEY)
     const result = {
@@ -92,7 +92,7 @@ export async function handleApiRequest(request, env, url) {
     }
 
     if (hasDbConfig) {
-      // 测试数据库连接
+      // Test database connection
       try {
         const response = await fetch(
           `${env.SUPABASE_URL}/rest/v1/api_configs?select=count&limit=1`,
@@ -116,45 +116,45 @@ export async function handleApiRequest(request, env, url) {
     return jsonResponse(result)
   }
 
-  // POST /api/login - 记录登录（验证成功后前端调用）
+  // POST /api/login - Record login (called by frontend after successful verification)
   if (path === '/api/login' && request.method === 'POST') {
     await recordLogin(env, request)
     return jsonResponse({ success: true })
   }
 
-  // GET /api/logins - 获取登录记录
+  // GET /api/logins - Get login records
   if (path === '/api/logins' && request.method === 'GET') {
     const limit = parseInt(url.searchParams.get('limit') || '20')
     const records = await getLoginRecords(env, limit)
     return jsonResponse({ success: true, data: records })
   }
 
-  // GET /api/stats - 获取请求统计数据
+  // GET /api/stats - Get request statistics
   if (path === '/api/stats' && request.method === 'GET') {
     const days = parseInt(url.searchParams.get('days') || '7')
     const stats = await getStats(env, days)
     return jsonResponse({ success: true, data: stats })
   }
 
-  // ============ IP 黑名单 API ============
+  // ============ IP Blacklist API ============
 
-  // GET /api/blacklist - 获取黑名单列表
+  // GET /api/blacklist - Get the blacklist
   if (path === '/api/blacklist' && request.method === 'GET') {
     const blockedIps = await getBlockedIps(env)
     return jsonResponse({ success: true, data: blockedIps })
   }
 
-  // POST /api/blacklist - 添加 IP 到黑名单
+  // POST /api/blacklist - Add an IP to the blacklist
   if (path === '/api/blacklist' && request.method === 'POST') {
     const body = await request.json()
     if (!body.ip) {
       return jsonResponse({ error: 'IP address is required' }, 400)
     }
-    const result = await blockIp(env, body.ip, body.reason || '手动封禁')
+    const result = await blockIp(env, body.ip, body.reason || 'Manual block')
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // DELETE /api/blacklist/:ip - 从黑名单移除 IP
+  // DELETE /api/blacklist/:ip - Remove an IP from the blacklist
   if (path.startsWith('/api/blacklist/') && request.method === 'DELETE') {
     const ip = decodeURIComponent(path.replace('/api/blacklist/', ''))
     if (!ip) {
@@ -164,7 +164,7 @@ export async function handleApiRequest(request, env, url) {
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // GET /api/redis/test - 测试 Redis 连接
+  // GET /api/redis/test - Test Redis connection
   if (path === '/api/redis/test' && request.method === 'GET') {
     const redis = getRedisClient(env)
     if (!redis) {
@@ -179,13 +179,13 @@ export async function handleApiRequest(request, env, url) {
       const testKey = 'anyrouter:test:ping'
       const testValue = Date.now().toString()
 
-      // 测试写入
+      // Test write
       await redis.set(testKey, testValue, 60)
 
-      // 测试读取
+      // Test read
       const readValue = await redis.get(testKey)
 
-      // 测试删除
+      // Test delete
       await redis.del(testKey)
 
       return jsonResponse({
@@ -205,13 +205,13 @@ export async function handleApiRequest(request, env, url) {
     }
   }
 
-  // POST /api/cache/warmup - 预热缓存（从数据库加载到 Redis/KV/内存）
+  // POST /api/cache/warmup - Warm up the cache (load from DB to Redis/KV/memory)
   if (path === '/api/cache/warmup' && request.method === 'POST') {
     const result = await warmupCache(env)
     return jsonResponse(result, result.success ? 200 : 400)
   }
 
-  // POST /api/stats/test - 测试统计记录功能（直接写入 Redis）
+  // POST /api/stats/test - Test stats recording function (writes directly to Redis)
   if (path === '/api/stats/test' && request.method === 'POST') {
     const redis = getRedisClient(env)
     if (!redis) {
@@ -222,13 +222,13 @@ export async function handleApiRequest(request, env, url) {
     const key = `anyrouter:stats:daily:${today}:total`
 
     try {
-      // 直接测试 INCR 命令
+      // Directly test INCR command
       const result = await redis.request(['INCR', key])
-      // 设置过期时间
+      // Set expiration time
       await redis.request(['EXPIRE', key, 604800])
       return jsonResponse({
         success: true,
-        message: '写入成功',
+        message: 'Write successful',
         key: key,
         newValue: result
       })

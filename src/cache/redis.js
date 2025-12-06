@@ -1,8 +1,8 @@
-// ============ Upstash Redis REST API 客户端 ============
+// ============ Upstash Redis REST API Client ============
 
 /**
- * Upstash Redis REST API 客户端
- * 使用 HTTP REST API，无需 TCP 连接，适合 Serverless
+ * Upstash Redis REST API Client.
+ * Uses the HTTP REST API, no TCP connection required, suitable for serverless environments.
  */
 export class RedisClient {
   constructor(url, token) {
@@ -41,7 +41,7 @@ export class RedisClient {
 }
 
 /**
- * 获取 Redis 客户端实例
+ * Get an instance of the Redis client.
  */
 export function getRedisClient(env) {
   if (!env.UPSTASH_REDIS_URL || !env.UPSTASH_REDIS_TOKEN) {

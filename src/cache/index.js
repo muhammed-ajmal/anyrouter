@@ -1,14 +1,14 @@
-// ============ 缓存管理 ============
+// ============ Cache Management ============
 
 import { CONFIG_CACHE_TTL_MS, CACHE_KEY } from '../config.js'
 import { getRedisClient } from './redis.js'
 
-// 内存缓存
+// Memory cache
 let configCache = { value: null, expiresAt: 0 }
 
 /**
- * 获取内存缓存的配置
- * @returns {Record<string, any>|null} 缓存的配置或 null（已过期）
+ * Gets the cached configuration from memory.
+ * @returns {Record<string, any>|null} The cached configuration, or null if expired.
  */
 export function getCachedConfig() {
   if (configCache.value && configCache.expiresAt > Date.now()) {
@@ -18,8 +18,8 @@ export function getCachedConfig() {
 }
 
 /**
- * 写入内存缓存
- * @param {Record<string, any>} config 配置对象
+ * Sets the configuration in the memory cache.
+ * @param {Record<string, any>} config - The configuration object.
  */
 export function setConfigCache(config) {
   configCache = {
@@ -29,42 +29,42 @@ export function setConfigCache(config) {
 }
 
 /**
- * 使内存缓存失效
+ * Invalidates the memory cache.
  */
 export function invalidateConfigCache() {
   configCache = { value: null, expiresAt: 0 }
 }
 
 /**
- * 使所有缓存失效（内存 + Redis + KV）
- * @param {object} env - 环境变量
+ * Invalidates all caches (memory, Redis, and KV).
+ * @param {object} env - The environment variables.
  */
 export async function invalidateAllCache(env) {
   configCache = { value: null, expiresAt: 0 }
 
-  // 清除 Redis 缓存
+  // Clear Redis cache
   const redis = getRedisClient(env)
   if (redis) {
     try {
       await redis.del(CACHE_KEY)
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
   }
 
-  // 清除 KV 缓存（备用）
+  // Clear KV cache (backup)
   if (env && env.CONFIG_KV) {
     try {
       await env.CONFIG_KV.delete(CACHE_KEY)
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
   }
 }
 
 /**
- * 预热缓存：强制从数据库加载并写入所有缓存层
- * @param {object} env - 环境变量
+ * Warms up the cache by forcing a load from the database and writing to all cache layers.
+ * @param {object} env - The environment variables.
  * @returns {Promise<{success: boolean, cached: string[], error?: string}>}
  */
 export async function warmupCache(env) {
@@ -75,7 +75,7 @@ export async function warmupCache(env) {
   }
 
   try {
-    // 1. 从数据库获取最新数据
+    // 1. Fetch the latest data from the database
     let response = await fetch(
       `${env.SUPABASE_URL}/rest/v1/api_configs?select=*&deleted_at=is.null&order=created_at.desc`,
       {
@@ -122,11 +122,11 @@ export async function warmupCache(env) {
 
     result.keysCount = data.length
 
-    // 2. 写入内存缓存
+    // 2. Write to memory cache
     setConfigCache(config)
     result.cached.push('memory')
 
-    // 3. 写入 Redis 缓存
+    // 3. Write to Redis cache
     const redis = getRedisClient(env)
     if (redis) {
       try {
@@ -138,7 +138,7 @@ export async function warmupCache(env) {
       }
     }
 
-    // 4. 写入 KV 缓存
+    // 4. Write to KV cache
     if (env.CONFIG_KV) {
       try {
         const { KV_CACHE_TTL_SECONDS } = await import('../config.js')

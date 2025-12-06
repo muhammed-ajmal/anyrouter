@@ -1,16 +1,16 @@
-// ============ 工具函数 ============
+// ============ Utility Functions ============
 
 import { DEFAULT_ADMIN_PASSWORD } from '../config.js'
 
 /**
- * 获取管理员密码（优先使用环境变量，否则使用默认值）
+ * Get admin password (priority use environment variables, otherwise use default value)
  */
 export function getAdminPassword(env) {
   return env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD
 }
 
 /**
- * 验证管理员密码
+ * Verify admin password
  */
 export function verifyAdmin(request, env) {
   const authHeader = request.headers.get('Authorization')
@@ -23,7 +23,7 @@ export function verifyAdmin(request, env) {
 }
 
 /**
- * 校验 URL 是否有效
+ * Check if the URL is valid
  * @param {string} apiUrl
  * @returns {boolean}
  */
@@ -41,12 +41,12 @@ export function isValidUrl(apiUrl) {
 }
 
 /**
- * 校验 token 是否符合要求
+ * Check if the token meets the requirements
  * @param {string} token
  * @returns {boolean}
  */
 export function isValidToken(token) {
-  // 允许字母、数字、常见特殊字符（_-./=+ 等），排除空格和危险字符
+  // Allow letters, numbers, common special characters (_-./=+ etc.), exclude spaces and dangerous characters
   return (
     typeof token === 'string' &&
     token.length > 0 &&
@@ -56,7 +56,7 @@ export function isValidToken(token) {
 }
 
 /**
- * 校验配置请求体
+ * Validate configuration request body
  * @param {any} body
  * @param {{ partial?: boolean }} [options]
  * @returns {{ valid: boolean, error?: string }}
@@ -101,7 +101,7 @@ export function validateConfigPayload(body, options = {}) {
 }
 
 /**
- * 判断配置中是否存在启用的 key
+ * Determine if there is an enabled key in the configuration
  * @param {Record<string, any>} config
  * @param {string} [apiUrl]
  * @returns {boolean}
@@ -122,7 +122,7 @@ export function hasEnabledKey(config, apiUrl) {
 }
 
 /**
- * 返回 JSON 响应
+ * Return JSON response
  */
 export function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -135,7 +135,7 @@ export function jsonResponse(data, status = 200) {
 }
 
 /**
- * 处理 CORS
+ * Handle CORS
  */
 export function handleCORS() {
   return new Response(null, {

@@ -1,41 +1,41 @@
-# AnyRouter - Cloudflare Workers 配置示例
-# 复制此文件为 wrangler.toml 并填入你的配置
+# AnyRouter - Cloudflare Workers Configuration Example
+# Copy this file to wrangler.toml and fill in your configuration
 
 name = "anyrouter"
 main = "anyrouter.js"
 compatibility_date = "2024-01-01"
 
 # ============================================
-# 环境变量配置
+# Environment Variable Configuration
 # ============================================
 [vars]
-# 管理面板密码（必须修改！）
+# Admin Panel Password (must be changed!)
 ADMIN_PASSWORD = "your-secure-password-here"
 
-# Supabase 配置（可选，如需密钥管理功能）
-# 获取方式：https://supabase.com -> 创建项目 -> Settings -> API
+# Supabase Configuration (optional, if key management is required)
+# How to get: https://supabase.com -> Create Project -> Settings -> API
 SUPABASE_URL = "https://xxx.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
-# Upstash Redis 配置（可选，如需统计和缓存）
-# 获取方式：https://upstash.com -> 创建 Redis 数据库 -> REST API
-# 注意：使用 HTTPS URL，不是 redis:// 协议
+# Upstash Redis Configuration (optional, for statistics and caching)
+# How to get: https://upstash.com -> Create Redis Database -> REST API
+# Note: Use HTTPS URL, not redis:// protocol
 UPSTASH_REDIS_URL = "https://xxx.upstash.io"
 UPSTASH_REDIS_TOKEN = "AXxxxx..."
 
 # ============================================
-# KV 缓存配置（可选，用于高并发场景）
+# KV Cache Configuration (optional, for high concurrency scenarios)
 # ============================================
-# 创建 KV namespace: npx wrangler kv:namespace create "CONFIG_CACHE"
-# 然后将返回的 id 填入下方
+# Create KV namespace: npx wrangler kv:namespace create "CONFIG_CACHE"
+# Then fill in the returned id below
 # [[kv_namespaces]]
 # binding = "CONFIG_KV"
 # id = "your-kv-namespace-id"
 
 # ============================================
-# 使用 Secrets 替代明文配置（推荐生产环境）
+# Use Secrets instead of plaintext configuration (recommended for production environments)
 # ============================================
-# 使用 wrangler secret 设置敏感信息：
+# Use wrangler secret to set sensitive information:
 # npx wrangler secret put SUPABASE_URL
 # npx wrangler secret put SUPABASE_KEY
 # npx wrangler secret put ADMIN_PASSWORD

@@ -1,4 +1,4 @@
-// ============ Supabase 数据库操作 ============
+// ============ Supabase Database Operations ============
 
 import {
   FALLBACK_CONFIG,
@@ -9,23 +9,23 @@ import {
 import { getCachedConfig, setConfigCache, invalidateAllCache } from '../cache/index.js'
 import { getRedisClient } from '../cache/redis.js'
 
-// 包装函数：清除所有缓存（内存 + Redis + KV）
+// Wrapper function: Clears all caches (Memory + Redis + KV)
 async function clearAllCache(env) {
   await invalidateAllCache(env)
 }
 
 /**
- * 从 Supabase 获取配置（支持多级缓存）
- * 缓存优先级：内存(10min) -> Redis(5min) -> KV(5min,备用) -> 数据库
+ * Get configuration from Supabase (with multi-level caching support)
+ * Cache priority: Memory (10min) -> Redis (5min) -> KV (5min, backup) -> Database
  */
 export async function getConfigFromDB(env) {
-  // 1. 优先返回内存缓存（最快，~0ms）
+  // 1. Prioritize returning from memory cache (fastest, ~0ms)
   const memoryCached = getCachedConfig()
   if (memoryCached) {
     return memoryCached
   }
 
-  // 2. 尝试从 Redis 缓存获取（推荐，~5-20ms）
+  // 2. Try to fetch from Redis cache (recommended, ~5-20ms)
   const redis = getRedisClient(env)
   if (redis) {
     try {
@@ -36,11 +36,11 @@ export async function getConfigFromDB(env) {
         return parsed
       }
     } catch {
-      // Redis 读取失败，继续
+      // Redis read failed, continue
     }
   }
 
-  // 3. 尝试从 KV 缓存获取（备用，~1-5ms）
+  // 3. Try to fetch from KV cache (backup, ~1-5ms)
   if (env.CONFIG_KV) {
     try {
       const kvCached = await env.CONFIG_KV.get(CACHE_KEY, { type: 'json' })
@@ -49,19 +49,19 @@ export async function getConfigFromDB(env) {
         return kvCached
       }
     } catch {
-      // KV 读取失败，继续
+      // KV read failed, continue
     }
   }
 
-  // 4. 无数据库配置时返回 fallback
+  // 4. Return fallback if no database is configured
   if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
     setConfigCache(FALLBACK_CONFIG)
     return FALLBACK_CONFIG
   }
 
-  // 5. 从数据库查询（最慢，~50-200ms）
+  // 5. Query from the database (slowest, ~50-200ms)
   try {
-    // 先尝试带软删除过滤的查询
+    // First, attempt a query with soft-delete filtering
     let response = await fetch(
       `${env.SUPABASE_URL}/rest/v1/api_configs?select=*&deleted_at=is.null&order=created_at.desc`,
       {
@@ -72,7 +72,7 @@ export async function getConfigFromDB(env) {
       },
     )
 
-    // 如果查询失败（可能是 deleted_at 列不存在），回退到不带过滤的查询
+    // If the query fails (e.g., deleted_at column doesn't exist), fall back to a query without the filter
     if (!response.ok) {
       response = await fetch(
         `${env.SUPABASE_URL}/rest/v1/api_configs?select=*&order=created_at.desc`,
@@ -112,16 +112,16 @@ export async function getConfigFromDB(env) {
 
     const finalizedConfig = Object.keys(config).length > 0 ? config : FALLBACK_CONFIG
 
-    // 写入内存缓存
+    // Write to memory cache
     setConfigCache(finalizedConfig)
 
-    // 写入 Redis 缓存（异步，不阻塞响应）
+    // Write to Redis cache asynchronously (does not block the response)
     if (redis) {
       redis.set(CACHE_KEY, JSON.stringify(finalizedConfig), REDIS_CACHE_TTL_SECONDS)
         .catch(() => {})
     }
 
-    // 写入 KV 缓存（备用，异步）
+    // Write to KV cache asynchronously (backup)
     if (env.CONFIG_KV) {
       env.CONFIG_KV.put(CACHE_KEY, JSON.stringify(finalizedConfig), {
         expirationTtl: KV_CACHE_TTL_SECONDS,
@@ -136,7 +136,7 @@ export async function getConfigFromDB(env) {
 }
 
 /**
- * 保存配置到数据库
+ * Save configuration to the database
  */
 export async function saveConfigToDB(env, apiUrl, token, enabled, remark = '', expiresAt = null) {
   if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
@@ -173,7 +173,7 @@ export async function saveConfigToDB(env, apiUrl, token, enabled, remark = '', e
 }
 
 /**
- * 更新配置
+ * Update configuration in the database
  */
 export async function updateConfigInDB(env, id, updates) {
   if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
@@ -181,7 +181,7 @@ export async function updateConfigInDB(env, id, updates) {
   }
 
   try {
-    // 添加更新时间
+    // Add update timestamp
     const data = { ...updates, updated_at: new Date().toISOString() }
 
     const response = await fetch(
@@ -209,7 +209,7 @@ export async function updateConfigInDB(env, id, updates) {
 }
 
 /**
- * 软删除配置（设置 deleted_at 而非物理删除）
+ * Soft-delete a configuration (sets deleted_at instead of physically deleting)
  */
 export async function deleteConfigFromDB(env, id) {
   if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
@@ -244,9 +244,9 @@ export async function deleteConfigFromDB(env, id) {
 }
 
 /**
- * 生成 SK 别名
- * 格式: sk-ar-[32位随机字符]
- * 类似 OpenAI 的 sk-xxx 格式
+ * Generate an SK alias.
+ * Format: sk-ar-[32 random characters]
+ * Similar to OpenAI's sk-xxx format.
  */
 export function generateSkAlias() {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -258,17 +258,17 @@ export function generateSkAlias() {
 }
 
 /**
- * 更新配置的 SK 别名
- * @param {object} env - 环境变量
- * @param {number} id - 配置 ID
- * @param {string|null} skAlias - SK 别名（null 表示生成新的）
+ * Update the SK alias for a configuration.
+ * @param {object} env - Environment variables.
+ * @param {number} id - The configuration ID.
+ * @param {string|null} skAlias - The SK alias (or null to generate a new one).
  */
 export async function updateSkAlias(env, id, skAlias = null) {
   if (!env.SUPABASE_URL || !env.SUPABASE_KEY) {
     return { success: false, error: 'Database not configured' }
   }
 
-  const newAlias = skAlias || generateSkAlias()
+  const newAlias = skAlias === null ? generateSkAlias() : skAlias
 
   try {
     const response = await fetch(
@@ -300,9 +300,9 @@ export async function updateSkAlias(env, id, skAlias = null) {
 }
 
 /**
- * 通过 SK 别名查找配置
- * @param {object} config - 配置对象
- * @param {string} skAlias - SK 别名
+ * Find a configuration by its SK alias.
+ * @param {object} config - The configuration object.
+ * @param {string} skAlias - The SK alias.
  * @returns {{ apiUrl: string, key: object } | null}
  */
 export function findBySkAlias(config, skAlias) {
@@ -317,7 +317,7 @@ export function findBySkAlias(config, skAlias) {
 }
 
 /**
- * 从指定 URL 的配置中随机选择一个启用的 key
+ * Get a random enabled key from the configuration for a specific URL.
  */
 export function getRandomEnabledKey(config, apiUrl) {
   const apiConfig = config[apiUrl]
@@ -325,14 +325,14 @@ export function getRandomEnabledKey(config, apiUrl) {
     return null
   }
 
-  // 过滤出所有启用的 keys
+  // Filter for all enabled keys
   const enabledKeys = apiConfig.keys.filter((key) => key.enabled)
 
   if (enabledKeys.length === 0) {
     return null
   }
 
-  // 随机选择一个启用的 key
+  // Randomly select one of the enabled keys
   const randomIndex = Math.floor(Math.random() * enabledKeys.length)
   return enabledKeys[randomIndex].token
 }

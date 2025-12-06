@@ -1,27 +1,27 @@
-// ============ Redis 请求统计 & IP 黑名单 ============
+// ============ Redis Request Statistics & IP Blacklist ============
 
 import { getRedisClient } from './redis.js'
 
-// 统计 Key 前缀
+// Statistics Key Prefix
 const STATS_PREFIX = 'anyrouter:stats'
 const BLACKLIST_KEY = 'anyrouter:blacklist:ips'
 
-// 统计采样配置
-// STATS_SAMPLE_PERCENT: 采样百分比（1-100）
-//   100 = 100% 每次请求都记录（默认，精确但 Redis 调用多）
-//   10 = 10% 只记录 1/10 的请求（统计值会自动乘以 10 还原）
-//   1 = 1% 只记录 1/100 的请求（大流量场景推荐）
+// Statistics Sampling Configuration
+// STATS_SAMPLE_PERCENT: Sampling percentage (1-100)
+//   100 = 100% Record every request (default, accurate but more Redis calls)
+//   10 = 10% Record only 1/10 of requests (stats are multiplied by 10 to compensate)
+//   1 = 1% Record only 1/100 of requests (recommended for high-traffic scenarios)
 const STATS_SAMPLE_PERCENT = 100
 
 /**
- * 获取今日日期字符串 (YYYY-MM-DD)
+ * Get today's date string (YYYY-MM-DD)
  */
 function getTodayKey() {
   return new Date().toISOString().split('T')[0]
 }
 
 /**
- * 获取当前小时字符串 (YYYY-MM-DD-HH)
+ * Get the current hour string (YYYY-MM-DD-HH)
  */
 function getHourKey() {
   const now = new Date()
@@ -29,21 +29,21 @@ function getHourKey() {
 }
 
 /**
- * 记录请求统计（优化版：采样减少 Redis 调用）
- * @param {object} env - 环境变量
- * @param {object} data - 请求数据 { apiUrl, keyId, success, ip }
+ * Record request statistics (optimized with sampling to reduce Redis calls)
+ * @param {object} env - Environment variables
+ * @param {object} data - Request data: { apiUrl, keyId, success, ip }
  */
 export async function recordRequest(env, data) {
   const redis = getRedisClient(env)
   if (!redis) return
 
-  // 采样判断：随机数 < 采样百分比 时才记录
-  // 例如 STATS_SAMPLE_PERCENT=10 时，只有 10% 的请求会记录
+  // Sampling logic: record only if a random number is less than the sample percentage
+  // e.g., if STATS_SAMPLE_PERCENT=10, only 10% of requests are recorded
   const shouldRecord = Math.random() * 100 < STATS_SAMPLE_PERCENT
   if (!shouldRecord) return
 
-  // 倍率：用于还原真实统计值
-  // 例如 10% 采样时，每次记录 +10 来估算真实总数
+  // Multiplier: used to extrapolate the true total from the sample
+  // e.g., with 10% sampling, each recorded event adds 10 to estimate the real total
   const multiplier = Math.round(100 / STATS_SAMPLE_PERCENT)
 
   const { apiUrl, keyId, success, ip } = data
@@ -51,40 +51,40 @@ export async function recordRequest(env, data) {
   const hour = getHourKey()
 
   try {
-    // 基础统计（每次采样都记录）
+    // Basic stats (recorded on every sample)
     await redis.request(['INCRBY', `${STATS_PREFIX}:daily:${today}:total`, multiplier])
     await redis.request(['INCRBY', `${STATS_PREFIX}:daily:${today}:${success ? 'success' : 'error'}`, multiplier])
     await redis.request(['INCRBY', `${STATS_PREFIX}:hourly:${hour}:total`, multiplier])
 
-    // URL 统计
+    // URL stats
     if (apiUrl) {
       await redis.request(['HINCRBY', `${STATS_PREFIX}:daily:${today}:urls`, apiUrl, multiplier])
     }
 
-    // Key 统计
+    // Key stats
     if (keyId) {
       await redis.request(['HINCRBY', `${STATS_PREFIX}:daily:${today}:keys`, keyId, multiplier])
       await redis.request(['HSET', `${STATS_PREFIX}:lastused`, keyId, new Date().toISOString()])
     }
 
-    // IP 统计
+    // IP stats
     if (ip && ip !== 'unknown') {
       await redis.request(['HINCRBY', `${STATS_PREFIX}:daily:${today}:ips`, ip, multiplier])
     }
 
-    // 设置过期时间（7天）
+    // Set expiration (7 days)
     const ttl = 7 * 24 * 60 * 60
     await redis.request(['EXPIRE', `${STATS_PREFIX}:daily:${today}:total`, ttl])
     await redis.request(['EXPIRE', `${STATS_PREFIX}:hourly:${hour}:total`, ttl])
   } catch {
-    // 统计失败不影响主流程
+    // Stat recording failures should not affect the main flow
   }
 }
 
 /**
- * 获取统计数据
- * @param {object} env - 环境变量
- * @param {number} days - 查询天数（默认7天）
+ * Get statistics data
+ * @param {object} env - Environment variables
+ * @param {number} days - Number of days to query (default 7)
  */
 export async function getStats(env, days = 7) {
   const redis = getRedisClient(env)
@@ -103,7 +103,7 @@ export async function getStats(env, days = 7) {
       summary: { total: 0, success: 0, error: 0 },
     }
 
-    // 获取最近 N 天的数据
+    // Get data for the last N days
     const dates = []
     for (let i = 0; i < days; i++) {
       const d = new Date()
@@ -111,7 +111,7 @@ export async function getStats(env, days = 7) {
       dates.push(d.toISOString().split('T')[0])
     }
 
-    // 查询每日数据
+    // Query daily data
     for (const date of dates) {
       const total = await redis.get(`${STATS_PREFIX}:daily:${date}:total`) || 0
       const success = await redis.get(`${STATS_PREFIX}:daily:${date}:success`) || 0
@@ -129,7 +129,7 @@ export async function getStats(env, days = 7) {
       stats.summary.error += parseInt(error)
     }
 
-    // 获取今日 URL 使用排行
+    // Get today's top URLs
     const today = getTodayKey()
     const urlStats = await redis.request(['HGETALL', `${STATS_PREFIX}:daily:${today}:urls`])
     if (urlStats && Array.isArray(urlStats)) {
@@ -138,7 +138,7 @@ export async function getStats(env, days = 7) {
       }
     }
 
-    // 获取今日 Key 使用排行
+    // Get today's top Keys
     const keyStats = await redis.request(['HGETALL', `${STATS_PREFIX}:daily:${today}:keys`])
     if (keyStats && Array.isArray(keyStats)) {
       for (let i = 0; i < keyStats.length; i += 2) {
@@ -146,7 +146,7 @@ export async function getStats(env, days = 7) {
       }
     }
 
-    // 获取今日 IP 使用排行
+    // Get today's top IPs
     const ipStats = await redis.request(['HGETALL', `${STATS_PREFIX}:daily:${today}:ips`])
     if (ipStats && Array.isArray(ipStats)) {
       for (let i = 0; i < ipStats.length; i += 2) {
@@ -154,7 +154,7 @@ export async function getStats(env, days = 7) {
       }
     }
 
-    // 获取最近24小时数据
+    // Get data for the last 24 hours
     for (let i = 0; i < 24; i++) {
       const d = new Date()
       d.setHours(d.getHours() - i)
@@ -166,7 +166,7 @@ export async function getStats(env, days = 7) {
       })
     }
 
-    stats.daily.reverse() // 按时间正序
+    stats.daily.reverse() // Sort in chronological order
     stats.hourly.reverse()
 
     return stats
@@ -176,9 +176,9 @@ export async function getStats(env, days = 7) {
 }
 
 /**
- * 获取所有 key 的最后使用时间
- * @param {object} env - 环境变量
- * @returns {Promise<Record<string, string>>} keyId -> ISO时间字符串
+ * Get the last used time for all keys
+ * @param {object} env - Environment variables
+ * @returns {Promise<Record<string, string>>} A map of keyId to ISO timestamp string
  */
 export async function getLastUsedTimes(env) {
   const redis = getRedisClient(env)
@@ -199,16 +199,16 @@ export async function getLastUsedTimes(env) {
 }
 
 /**
- * 记录管理员登录
- * @param {object} env - 环境变量
- * @param {Request} request - 请求对象（用于获取 IP）
+ * Record an administrator login
+ * @param {object} env - Environment variables
+ * @param {Request} request - The request object (to get the IP)
  */
 export async function recordLogin(env, request) {
   const redis = getRedisClient(env)
   if (!redis) return
 
   try {
-    // 获取客户端 IP（Cloudflare 提供）
+    // Get client IP (provided by Cloudflare)
     const ip = request.headers.get('CF-Connecting-IP') ||
                request.headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ||
                'unknown'
@@ -216,21 +216,21 @@ export async function recordLogin(env, request) {
     const userAgent = request.headers.get('User-Agent') || 'unknown'
     const now = new Date().toISOString()
 
-    // 登录记录格式：时间|IP|UA
+    // Login record format: time|IP|UA
     const record = JSON.stringify({ time: now, ip, ua: userAgent })
 
-    // 使用 LPUSH 添加到列表头部，最多保留 50 条记录
+    // Add to the front of the list, keeping a max of 50 records
     await redis.request(['LPUSH', `${STATS_PREFIX}:logins`, record])
     await redis.request(['LTRIM', `${STATS_PREFIX}:logins`, 0, 49])
   } catch {
-    // 记录失败不影响登录
+    // Recording failure should not affect login
   }
 }
 
 /**
- * 获取登录记录
- * @param {object} env - 环境变量
- * @param {number} limit - 获取记录数量（默认20条）
+ * Get login records
+ * @param {object} env - Environment variables
+ * @param {number} limit - Number of records to fetch (default 20)
  */
 export async function getLoginRecords(env, limit = 20) {
   const redis = getRedisClient(env)
@@ -252,12 +252,12 @@ export async function getLoginRecords(env, limit = 20) {
   }
 }
 
-// ============ IP 黑名单管理 ============
+// ============ IP Blacklist Management ============
 
 /**
- * 检查 IP 是否在黑名单中
- * @param {object} env - 环境变量
- * @param {string} ip - IP 地址
+ * Check if an IP is in the blacklist
+ * @param {object} env - Environment variables
+ * @param {string} ip - The IP address
  * @returns {Promise<{blocked: boolean, reason?: string}>}
  */
 export async function isIpBlocked(env, ip) {
@@ -267,7 +267,7 @@ export async function isIpBlocked(env, ip) {
   try {
     const reason = await redis.request(['HGET', BLACKLIST_KEY, ip])
     if (reason) {
-      return { blocked: true, reason: reason || '已被管理员封禁' }
+      return { blocked: true, reason: reason || 'Blocked by administrator' }
     }
     return { blocked: false }
   } catch {
@@ -276,12 +276,12 @@ export async function isIpBlocked(env, ip) {
 }
 
 /**
- * 添加 IP 到黑名单
- * @param {object} env - 环境变量
- * @param {string} ip - IP 地址
- * @param {string} reason - 封禁原因
+ * Add an IP to the blacklist
+ * @param {object} env - Environment variables
+ * @param {string} ip - The IP address
+ * @param {string} reason - The reason for blocking
  */
-export async function blockIp(env, ip, reason = '手动封禁') {
+export async function blockIp(env, ip, reason = 'Manual block') {
   const redis = getRedisClient(env)
   if (!redis) return { success: false, error: 'Redis not configured' }
 
@@ -298,9 +298,9 @@ export async function blockIp(env, ip, reason = '手动封禁') {
 }
 
 /**
- * 从黑名单移除 IP
- * @param {object} env - 环境变量
- * @param {string} ip - IP 地址
+ * Remove an IP from the blacklist
+ * @param {object} env - Environment variables
+ * @param {string} ip - The IP address
  */
 export async function unblockIp(env, ip) {
   const redis = getRedisClient(env)
@@ -315,8 +315,8 @@ export async function unblockIp(env, ip) {
 }
 
 /**
- * 获取黑名单列表
- * @param {object} env - 环境变量
+ * Get the blacklist
+ * @param {object} env - Environment variables
  */
 export async function getBlockedIps(env) {
   const redis = getRedisClient(env)
@@ -329,11 +329,11 @@ export async function getBlockedIps(env) {
     const blockedIps = []
     for (let i = 0; i < result.length; i += 2) {
       const ip = result[i]
-      let info = { reason: '手动封禁', blocked_at: null }
+      let info = { reason: 'Manual block', blocked_at: null }
       try {
         info = JSON.parse(result[i + 1])
       } catch {
-        info.reason = result[i + 1] || '手动封禁'
+        info.reason = result[i + 1] || 'Manual block'
       }
       blockedIps.push({ ip, ...info })
     }

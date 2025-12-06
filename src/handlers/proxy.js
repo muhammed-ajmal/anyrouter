@@ -1,11 +1,11 @@
-// ============ 代理请求处理 ============
+// ============ Proxy Request Handling ============
 
 import { jsonResponse } from '../utils/helpers.js'
 import { getConfigFromDB, findBySkAlias } from '../db/supabase.js'
 import { recordRequest, isIpBlocked } from '../cache/stats.js'
 
 /**
- * 生成友好的错误响应
+ * Generate a friendly error response
  */
 function errorResponse(code, message, hint) {
   return jsonResponse({
@@ -13,7 +13,7 @@ function errorResponse(code, message, hint) {
       code,
       message,
       hint,
-      contact: '如有疑问请联系管理员',
+      contact: 'If you have any questions, please contact the administrator.',
     }
   }, code === 'UNAUTHORIZED' ? 401 :
     code === 'BAD_REQUEST' ? 400 :
@@ -23,31 +23,31 @@ function errorResponse(code, message, hint) {
 }
 
 /**
- * 处理代理请求
- * 支持两种格式:
- * 1. Authorization: Bearer https://api.example.com:123 (按 ID 查找 token)
- * 2. Authorization: Bearer https://api.example.com:sk-xxx (直接使用 token)
+ * Handle proxy requests.
+ * Supports two formats:
+ * 1. Authorization: Bearer https://api.example.com:123 (find token by ID)
+ * 2. Authorization: Bearer https://api.example.com:sk-xxx (use token directly)
  * @param {Request} request
  * @param {object} env
  * @param {URL} url
- * @param {ExecutionContext} ctx - Cloudflare Workers 执行上下文，用于 waitUntil
+ * @param {ExecutionContext} ctx - Cloudflare Workers execution context, used for waitUntil
  */
 export async function handleProxyRequest(request, env, url, ctx) {
-  // 获取客户端 IP
+  // Get client IP
   const clientIp = request.headers.get('CF-Connecting-IP') ||
                    request.headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ||
                    'unknown'
 
-  // 检查 IP 黑名单
+  // Check IP blacklist
   const blockCheck = await isIpBlocked(env, clientIp)
   if (blockCheck.blocked) {
     return jsonResponse({
       error: {
         code: 'IP_BLOCKED',
-        message: 'IP 已被封禁',
+        message: 'IP address has been blocked',
         reason: blockCheck.reason,
         ip: clientIp,
-        contact: '如有疑问请联系管理员',
+        contact: 'If you have any questions, please contact the administrator.',
       }
     }, 403)
   }
@@ -56,45 +56,45 @@ export async function handleProxyRequest(request, env, url, ctx) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return errorResponse(
       'UNAUTHORIZED',
-      '缺少授权信息',
-      '请在 Authorization header 中提供 Bearer token，格式: Bearer <API_URL>:<Key ID> 或 Bearer sk-ar-xxx'
+      'Missing authorization information',
+      'Please provide a Bearer token in the Authorization header. Format: Bearer <API_URL>:<Key ID> or Bearer sk-ar-xxx'
     )
   }
 
-  const authValue = authHeader.substring(7).trim() // 去掉 "Bearer " 前缀
+  const authValue = authHeader.substring(7).trim() // Remove "Bearer " prefix
 
-  // 获取配置
+  // Get configuration
   const config = await getConfigFromDB(env)
 
   let tokenToUse
   let targetApiUrl
   let usedKeyId = null
 
-  // 检查是否是 SK 别名模式 (sk-ar-xxx)
+  // Check if it's SK alias mode (sk-ar-xxx)
   if (authValue.startsWith('sk-ar-')) {
     const found = findBySkAlias(config, authValue)
     if (!found) {
       return errorResponse(
         'NOT_FOUND',
-        'SK 别名不存在',
-        `找不到 SK 别名 "${authValue}"，请检查是否输入正确或联系管理员获取有效的 SK`
+        'SK alias does not exist',
+        `Could not find SK alias "${authValue}". Please check if it's correct or contact an administrator to get a valid SK.`
       )
     }
 
     if (!found.key.enabled) {
       return errorResponse(
         'FORBIDDEN',
-        'SK 已被禁用',
-        '此 SK 别名当前处于禁用状态，请联系管理员启用'
+        'SK has been disabled',
+        'This SK alias is currently disabled. Please contact an administrator to enable it.'
       )
     }
 
-    // 检查是否过期
+    // Check for expiration
     if (found.key.expires_at && new Date(found.key.expires_at) < new Date()) {
       return errorResponse(
         'FORBIDDEN',
-        'SK 已过期',
-        `此 SK 别名已于 ${found.key.expires_at} 过期，请联系管理员续期或获取新的 SK`
+        'SK has expired',
+        `This SK alias expired on ${found.key.expires_at}. Please contact an administrator to renew it or get a new one.`
       )
     }
 
@@ -102,93 +102,93 @@ export async function handleProxyRequest(request, env, url, ctx) {
     targetApiUrl = found.apiUrl
     usedKeyId = found.key.key_id
   } else {
-    // 原有格式: <api_url>:<key>
-    // 需要从最后一个冒号分割，因为 URL 中可能包含端口号 (https://api.example.com:8080:key)
+    // Original format: <api_url>:<key>
+    // Need to split from the last colon, as the URL may contain a port number (e.g., https://api.example.com:8080:key)
     const lastColonIndex = authValue.lastIndexOf(':')
     if (lastColonIndex === -1 || lastColonIndex < 8) {
-      // 没有冒号，或者冒号在 https:// 中
+      // No colon, or the colon is within "https://"
       return errorResponse(
         'BAD_REQUEST',
-        '授权格式错误',
-        '正确格式: <API_URL>:<Key ID> 或 sk-ar-xxx，例如 https://api.openai.com:a3x9k2'
+        'Invalid authorization format',
+        'Correct format: <API_URL>:<Key ID> or sk-ar-xxx. For example: https://api.openai.com:a3x9k2'
       )
     }
 
     targetApiUrl = authValue.substring(0, lastColonIndex)
     const keyPart = authValue.substring(lastColonIndex + 1)
 
-    // 验证 API URL 格式
+    // Validate API URL format
     if (!targetApiUrl.startsWith('http://') && !targetApiUrl.startsWith('https://')) {
       return errorResponse(
         'BAD_REQUEST',
-        'API URL 格式无效',
-        'URL 必须以 http:// 或 https:// 开头'
+        'Invalid API URL format',
+        'URL must start with http:// or https://'
       )
     }
 
     if (!keyPart) {
       return errorResponse(
         'BAD_REQUEST',
-        '缺少 Key ID 或 Token',
-        '请在 URL 后面加上冒号和 Key ID（6位）或完整 Token'
+        'Missing Key ID or Token',
+        'Please append a colon and a 6-digit Key ID or the full Token after the URL.'
       )
     }
 
-    // 判断是 key_id (6位字母数字) 还是直接 token
+    // Determine if it's a key_id (6-digit alphanumeric) or a direct token
     const isKeyId = /^[a-z0-9]{6}$/.test(keyPart)
 
     if (isKeyId) {
-      // 按 key_id 查找 token
+      // Find token by key_id
       const keyId = keyPart
       usedKeyId = keyId
 
-      // 检查该 API URL 是否在配置中
+      // Check if the API URL is in the configuration
       if (!config[targetApiUrl]) {
         return errorResponse(
           'NOT_FOUND',
-          'API 地址未配置',
-          `目标 API "${targetApiUrl}" 尚未在系统中注册，请联系管理员添加配置`
+          'API address not configured',
+          `The target API "${targetApiUrl}" has not been registered in the system. Please contact an administrator to add the configuration.`
         )
       }
 
-      // 在该 URL 的 keys 中查找指定 key_id
+      // Find the specified key_id within the keys for that URL
       const keyConfig = config[targetApiUrl].keys.find(k => k.key_id === keyId)
       if (!keyConfig) {
         return errorResponse(
           'NOT_FOUND',
-          'Key ID 不存在',
-          `找不到 Key ID "${keyId}"，请检查是否输入正确或联系管理员获取有效的 Key ID`
+          'Key ID does not exist',
+          `Could not find Key ID "${keyId}". Please check if it's correct or contact an administrator to get a valid Key ID.`
         )
       }
 
       if (!keyConfig.enabled) {
         return errorResponse(
           'FORBIDDEN',
-          'Key 已被禁用',
-          `Key ID "${keyId}" 当前处于禁用状态，请联系管理员启用或获取新的 Key ID`
+          'Key has been disabled',
+          `Key ID "${keyId}" is currently disabled. Please contact an administrator to enable it or get a new Key ID.`
         )
       }
 
-      // 检查是否过期
+      // Check for expiration
       if (keyConfig.expires_at && new Date(keyConfig.expires_at) < new Date()) {
         return errorResponse(
           'FORBIDDEN',
-          'Key 已过期',
-          `Key ID "${keyId}" 已于 ${keyConfig.expires_at} 过期，请联系管理员续期或获取新的 Key ID`
+          'Key has expired',
+          `Key ID "${keyId}" expired on ${keyConfig.expires_at}. Please contact an administrator to renew it or get a new Key ID.`
         )
       }
 
       tokenToUse = keyConfig.token
     } else {
-      // 直接使用传入的 token
+      // Use the provided token directly
       tokenToUse = keyPart
     }
   }
 
-  // 设置目标主机和协议
+  // Set target host and protocol
   const targetUrl = new URL(targetApiUrl)
 
-  // 检查是否在尝试反代自身（禁止循环代理）
+  // Check if trying to proxy to itself (prevent infinite loop)
   const selfHostname = url.hostname.toLowerCase()
   const targetHostname = targetUrl.hostname.toLowerCase()
   if (targetHostname === selfHostname ||
@@ -196,8 +196,8 @@ export async function handleProxyRequest(request, env, url, ctx) {
       selfHostname.endsWith('.' + targetHostname)) {
     return errorResponse(
       'FORBIDDEN',
-      '禁止反代自身',
-      '不允许将请求代理到代理服务自身的域名，这会造成循环请求'
+      'Proxying to self is prohibited',
+      'Proxying requests to the proxy service\'s own domain is not allowed as it would cause a loop.'
     )
   }
 
@@ -205,10 +205,10 @@ export async function handleProxyRequest(request, env, url, ctx) {
   url.hostname = targetUrl.hostname
   url.port = targetUrl.port || ''
 
-  // 获取原始请求头
+  // Get original request headers
   const headers = new Headers(request.headers)
 
-  // 设置 Authorization header
+  // Set Authorization header
   headers.set('authorization', 'Bearer ' + tokenToUse)
 
   const modifiedRequest = new Request(url.toString(), {
@@ -222,10 +222,10 @@ export async function handleProxyRequest(request, env, url, ctx) {
     const response = await fetch(modifiedRequest)
     const modifiedResponse = new Response(response.body, response)
 
-    // 添加允许跨域访问的响应头
+    // Add headers to allow cross-origin access
     modifiedResponse.headers.set('Access-Control-Allow-Origin', '*')
 
-    // SSE 流式响应优化：禁用缓冲和压缩，确保实时传输
+    // SSE streaming response optimization: disable buffering and compression for real-time transport
     const contentType = response.headers.get('content-type') || ''
     const isStreaming = contentType.includes('text/event-stream') ||
                         contentType.includes('stream') ||
@@ -235,11 +235,11 @@ export async function handleProxyRequest(request, env, url, ctx) {
       modifiedResponse.headers.set('X-Accel-Buffering', 'no')
       modifiedResponse.headers.set('Connection', 'keep-alive')
       modifiedResponse.headers.set('Content-Encoding', 'identity')
-      // 删除可能导致缓冲的 headers
+      // Remove headers that might cause buffering
       modifiedResponse.headers.delete('Content-Length')
     }
 
-    // 记录请求统计（使用 waitUntil 确保在响应后完成）
+    // Record request statistics (use waitUntil to ensure it completes after the response)
     if (ctx && ctx.waitUntil) {
       ctx.waitUntil(recordRequest(env, {
         apiUrl: targetApiUrl,
@@ -251,7 +251,7 @@ export async function handleProxyRequest(request, env, url, ctx) {
 
     return modifiedResponse
   } catch (error) {
-    // 记录失败请求
+    // Record failed request
     if (ctx && ctx.waitUntil) {
       ctx.waitUntil(recordRequest(env, {
         apiUrl: targetApiUrl,
@@ -264,8 +264,8 @@ export async function handleProxyRequest(request, env, url, ctx) {
     console.error('Proxy request error:', error)
     return errorResponse(
       'SERVICE_ERROR',
-      '代理请求失败',
-      `无法连接到目标 API "${targetApiUrl}"，可能是网络问题或目标服务不可用，请稍后重试`
+      'Proxy request failed',
+      `Could not connect to the target API "${targetApiUrl}". This could be a network issue or the target service may be unavailable. Please try again later.`
     )
   }
 }
