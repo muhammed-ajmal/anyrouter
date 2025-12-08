@@ -67,7 +67,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 ```
 
-## Environment Variables
+## Environment Variables 
 
   Variable                Required   Description
   ----------------------- ---------- ----------------------------
